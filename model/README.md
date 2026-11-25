@@ -10,10 +10,24 @@ All pretraining should run on a Colab GPU, not on the API host.
 
 1. Open [model/train_colab.ipynb](https://colab.research.google.com/github/drizzy765/adiretrust-app/blob/main/model/train_colab.ipynb) in Colab.
 2. Set the runtime to GPU.
-3. Run the cells: they clone this repo, optionally mount the missing print photos from Drive, extract frozen DINOv2 ViT-S/14 features, train a logistic regression probe, evaluate val/test with **computed** metrics, and write `EVAL.md`.
-4. Download `model/weights/dinov2_vits14_logreg.joblib` and `label_map.json` (or copy them to Drive), then commit those small files or hand them to David for `POST /check`.
+3. Run the **default** cells: they clone this repo, optionally mount the missing print photos from Drive, extract frozen **DINOv2 ViT-S/14** features, train a **logistic regression** probe, evaluate val/test with **computed** metrics (P/R on both classes, false-genuine count, ROC-AUC if both classes exist, val threshold sweep), and write `EVAL.md`.
+4. Optional cells are **off by default** (`RUN_*` flags): k-NN vs logreg; SigLIP and frozen EfficientNet-B0 probes; DINOv2 ViT-B and patch tokens; CLIP/SigLIP zero-shot with the plan prompts; Stage-2 DTD/batik notes (no auto-download); train-only augmentation + last-block fine-tune; a DINOv2 patch-similarity heatmap; multi-shot aggregation when `view_tag` is real.
+5. Download `model/weights/dinov2_vits14_logreg.joblib` and `label_map.json` (or copy them to Drive), then commit those small files or hand them to David for `POST /check`.
 
 `model/train_probe.py --dry-run` remains a local way to inspect the manifest without torch. It does not replace the Colab notebook.
+
+
+## Engineering plan (source of truth)
+
+The notebook follows the staged transfer plan in:
+
+- Notion [AdireTrust — Hackathon Prep Plan](https://app.notion.com/p/4199e1028e8581b4a2a6f210c2a32cf8) §8 and §3
+- [`docs/research-plan.md`](../docs/research-plan.md) §6–7 and [`docs/model-methodology.md`](../docs/model-methodology.md)
+- [`docs/PLAN.md`](../docs/PLAN.md)
+
+**Stages:** (1) frozen DINOv2 or SigLIP backbone, (2) optional related-task data (batik / DTD / AITEX — not auto-downloaded), (3) web + synthetic **train only**, (4) real field photos. **Experiment order:** zero-shot CLIP/SigLIP, then frozen linear probe or k-NN (DINOv2, SigLIP, EfficientNet; global and patch tokens), then fine-tune only the val winner (last blocks, ~1e-5) if n is large enough, then ablations. Do not train from scratch. Do not full-network fine-tune on fewer than 300 pieces.
+
+The **default Colab path** is still Stage-4 field data + a frozen **DINOv2 ViT-S/14** + **logistic regression** probe. That is the first real score the plan asks for.
 
 
 ## Task
@@ -54,7 +68,7 @@ Paul owns preprocessing and training. Timi helps with training and evaluation. D
 
 ## Evaluation
 
-Report precision and recall on both classes, the false-genuine count, a confusion matrix, and an abstain rate at the chosen threshold. Tune the threshold on validation, never on test. See `docs/model-methodology.md`.
+Report precision and recall on **both** classes, the false-genuine count, a confusion matrix, coverage/abstain rate, and ROC-AUC **only when both classes are present**. Sweep the abstain threshold on **val** (still report the app default 0.6), then apply the chosen threshold to test. Never tune on test. See `docs/model-methodology.md` and write the computed numbers into `EVAL.md`.
 
 ## How to run (once torch is installed locally)
 

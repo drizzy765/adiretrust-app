@@ -13,9 +13,32 @@ A buyer photographs an Adire cloth. The app returns:
 
 This is a research/demo tool, not a certification standard. A photo alone cannot prove how a cloth was made. A false “genuine” on a print is the costly error; abstain when unsure.
 
+
+## Training stages (engineering plan)
+
+Follow the official pretraining plan. The default Colab run is still a **frozen DINOv2 ViT-S/14 + logistic regression** probe on the field photos we have. Everything else is optional and gated in `model/train_colab.ipynb`.
+
+Sources: Notion [AdireTrust — Hackathon Prep Plan](https://app.notion.com/p/4199e1028e8581b4a2a6f210c2a32cf8) §8 (Staged Transfer Learning) and §3 (experiments); `docs/research-plan.md` §6–7; `docs/model-methodology.md`. The same text is in the research repo’s `adiretrust.md` / `adiretrust.pdf`. The [ajibua/AdireTrust README](https://github.com/ajibua/AdireTrust) restates the four-stage table.
+
+**Data stages**
+
+1. **General backbone** — frozen pretrained DINOv2 or SigLIP (ViT-S / ViT-B). Not trained from scratch.
+2. **Intermediate related task** — batik tulis/cap vs print, plus DTD, AITEX, optionally Wax-MNIST / TILDA. Do not auto-download these in the default notebook run.
+3. **Scraped + synthetic** — labeled web images and procedural textures. **Synthetic is train only; evaluate on real photos only.**
+4. **Field photos** — Abeokuta genuine vs print, ideally front + back + macro, 30–50 pieces per class minimum (prefer ~300). This is the demo domain.
+
+**Experiment order**
+
+1. Zero-shot CLIP / SigLIP prompts, optional VLM on a fixed 20-piece preview (explanation layer only).
+2. Linear probe **or** k-NN on frozen DINOv2 and SigLIP (and a frozen EfficientNet). Try global embeddings and patch tokens. First real score. Compare on **val**.
+3. Fine-tune **only the winner**, last blocks first (~1e-5, early stopping), and only if the probe is useful and n is large enough. Do not full-network fine-tune on fewer than 300 pieces. Later options: EfficientNet-B0 / MobileNetV2, or ConvNeXt / small ViT if the transformer wins.
+4. Ablations if time: front vs front+back; full vs macro; one phone vs mixed.
+
+Train-only augmentation (lighting, blur, small rotation, color jitter, macro crops) belongs with fine-tuning. Split by physical `piece_id`. Headline metric: **precision on genuine**. Also report recall and precision on both classes, false-genuine count, confusion matrix, ROC-AUC when both classes exist, and a val-tuned abstain threshold (app default 0.6 is a starting point). Grad-CAM or DINOv2 patch-similarity maps are inspection aids, not proof. **Do not invent metrics.**
+
 ## Build order
 
-1. **Photo check** — train a frozen DINOv2 ViT-S/14 linear probe when the data allows, and wire `POST /check`. Until then the endpoint is an honest stub (`uncertain`, confidence 0.0, reasons marked STUB).
+1. **Photo check** — default: train a frozen DINOv2 ViT-S/14 logistic-regression probe in Colab (`model/train_colab.ipynb`) when the data allows, and wire `POST /check`. Optional gated cells cover k-NN, SigLIP, EfficientNet-B0, ViT-B / patch tokens, zero-shot prompts, and heatmaps. Until a real checkpoint is wired, the endpoint is an honest stub (`uncertain`, confidence 0.0, reasons marked STUB).
 2. **Interactive frontend** — Vite + React: upload, animated scan, result card. Follow `design/DESIGN_SYSTEM.md`.
 3. **Seller map** — Leaflet + OpenStreetMap, browser geolocation, “Open in Google Maps” link. No Google API key. `GET /sellers` currently returns five PLACEHOLDER pins.
 4. **QR Adire Passport** — `GET /passport/{id}` plus a printable/scanable card for consented genuine pieces.
