@@ -6,7 +6,7 @@ Order: weights on `main` → David deploys the backend on Nobus and posts the UR
 
 No secrets in git. Set keys only in the host’s environment.
 
-`/check` is wired to the committed probe. The next step is deploying the backend on Nobus; Timi can build the frontend against the API contract (mocks until the URL exists) and deploy it on Nobus too.
+`/check` is wired to the committed probe. The backend is deployed separately; Nobus can build the frontend from the root Compose file, so Docker Desktop does not need to run on the laptop.
 
 ## 1. Backend on Nobus Cube (primary)
 
@@ -23,11 +23,12 @@ No secrets in git. Set keys only in the host’s environment.
 ## 2. Frontend on Nobus (primary)
 Timi can scaffold and develop now, using localhost or mocks until the backend URL exists.
 
-1. Scaffold the Vite + React app in `frontend/` and build to `frontend/dist`.
-2. Set `VITE_API_URL` to David’s public Nobus backend origin (no trailing slash).
-3. Deploy the static frontend on Nobus Cube.
-4. Send the public frontend URL to David for `ALLOWED_ORIGINS`, and add it to README **Live URLs**.
-5. Run `npm run build` once and one end-to-end pass against the live API after CORS is updated.
+1. Create another Cube from the same repository and branch `main`.
+2. Enable **Docker Compose Present** and disable **Dockerfile Present**. The root `docker-compose.yml` builds `frontend/Dockerfile` with the `frontend/` build context.
+3. Set **Container Port** to `80`. Set build variable `VITE_API_URL` to the public backend origin with no trailing slash (default: `http://102.209.47.246:8000`). Do not add provider API keys to the frontend.
+4. Launch/redeploy the Cube. Nobus builds the image from GitHub; a local Docker Desktop build is optional.
+5. Open the frontend URL and send its exact origin to David to add to backend `ALLOWED_ORIGINS`. If the frontend uses HTTPS, the backend must also be reachable over HTTPS to avoid browser mixed-content blocking.
+6. Verify the frontend loads and test one API request after CORS is updated.
 
 ## 3. Fallback: Render (backend) and Vercel (frontend)
 

@@ -8,7 +8,7 @@ npm install
 npm run dev
 ```
 
-Nobus image: `docker build -t adiretrust-web ./frontend --build-arg VITE_API_URL=https://your-api.example`
+Nobus builds the frontend from the repository root using `docker-compose.yml` (set `VITE_API_URL` to the backend origin in the Cube's build variables). For a local build, run `docker build -t adiretrust-web ./frontend --build-arg VITE_API_URL=https://your-api.example`.
 
 ## Product flow
 
