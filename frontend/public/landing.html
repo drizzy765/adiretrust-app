@@ -1,0 +1,67 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AdireTrust: is your Adire real?</title>
+<style>
+:root{--navy:#0f1b3d;--indigo:#2b3f9e;--gold:#e0a82e;--cream:#f7f1e3;--ink:#1a1a1a}
+*{box-sizing:border-box;margin:0}body{font-family:system-ui,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--cream)}
+.pat{background-color:var(--navy);background-image:radial-gradient(circle at 20px 20px,rgba(255,255,255,.08) 6px,transparent 7px),radial-gradient(circle at 0 0,rgba(224,168,46,.1) 2px,transparent 3px);background-size:40px 40px,20px 20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 6vw;color:#fff}nav b{font-size:22px}nav b span{color:var(--gold)}
+a.btn{display:inline-block;background:var(--gold);color:var(--navy);padding:14px 26px;border-radius:999px;font-weight:700;text-decoration:none;transition:transform .2s}a.btn:hover{transform:translateY(-3px)}
+a.ghost{background:transparent;color:#fff;border:2px solid #fff;margin-left:10px}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:40px 6vw 80px;color:#fff}
+.hero h1{font-size:clamp(36px,5vw,64px);line-height:1.05}.hero h1 em{color:var(--gold);font-style:normal}.hero p{font-size:20px;opacity:.85;margin:20px 0 30px;max-width:560px}
+.photo{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:4/5;background:url(workshop.jpg) center/cover}
+.photo::after{content:"";position:absolute;inset:18px;border:3px solid var(--gold);clip-path:polygon(0 0,18% 0,18% 3px,3px 3px,3px 18%,0 18%,0 82%,3px 82%,3px calc(100% - 3px),18% calc(100% - 3px),18% 100%,82% 100%,82% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 82%,100% 82%,100% 18%,calc(100% - 3px) 18%,calc(100% - 3px) 3px,82% 3px,82% 0,100% 0,100% 100%,0 100%)}
+.scan{position:absolute;left:18px;right:18px;height:3px;background:var(--gold);box-shadow:0 0 18px var(--gold);animation:scan 2.6s ease-in-out infinite}@keyframes scan{0%,100%{top:20px}50%{top:calc(100% - 22px)}}
+.cap{position:absolute;bottom:14px;left:14px;background:rgba(15,27,61,.8);padding:6px 12px;border-radius:8px;font-size:13px}
+section{padding:70px 6vw}h2{font-size:clamp(28px,3.5vw,42px);color:var(--navy);margin-bottom:28px}
+.news{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.card{background:#fff;border-radius:14px;padding:24px;border-left:6px solid var(--indigo);box-shadow:0 6px 24px rgba(0,0,0,.06)}
+.card q{display:block;font-size:17px;margin-bottom:14px}.card a{color:var(--indigo);font-weight:600;font-size:14px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.step{background:#fff;border-radius:14px;padding:28px;cursor:pointer;transition:.25s;border:2px solid transparent}
+.step:hover,.step.on{border-color:var(--gold);transform:translateY(-4px)}.step .n{font-size:40px;font-weight:800;color:var(--gold)}.step h3{margin:8px 0;color:var(--navy)}.step p{opacity:.75}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;color:#fff;text-align:center}.stat b{font-size:46px;color:var(--gold);display:block}
+.feat{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.f{background:#fff;padding:22px;border-radius:12px}.f h3{color:var(--indigo);margin-bottom:6px}
+details{background:#fff;border-radius:12px;padding:18px 22px;margin-bottom:12px}summary{font-weight:700;cursor:pointer;color:var(--navy)}details p{margin-top:10px;opacity:.8}
+footer{padding:30px 6vw;color:#fff;font-size:14px;opacity:.9}.small{font-size:13px;opacity:.7;margin-top:14px}
+@media(max-width:800px){.hero,.news,.steps,.stats,.feat{grid-template-columns:1fr}}
+.reveal{opacity:0;transform:translateY(24px);transition:.7s}.reveal.in{opacity:1;transform:none}
+</style></head><body>
+<div class="pat"><nav><b>Adire<span>Trust</span></b><a class="btn" href="/">Open the app</a></nav>
+<div class="hero"><div><h1>Is your Adire <em>hand-dyed</em> or a factory print?</h1>
+<p>Snap one photo. AdireTrust checks it, explains why, and connects you to real artisans, so buyers stop overpaying for fakes and makers keep their craft alive.</p>
+<a class="btn" href="/">Check a cloth</a><a class="btn ghost" href="#how">How it works</a></div>
+<div class="photo"><div class="scan"></div><div class="cap">Our teammate Paul collecting data at a workshop in Ibadan</div></div></div></div>
+
+<section class="reveal"><h2>The problem is real</h2><div class="news">
+<div class="card"><q>the 'fake adire' has flooded local markets, threatening the survival of local producers and their centuries-old craft.</q><a href="https://punchng.com/adire-makers-decry-govt-inaction-as-chinese-fakes-flood-market/" target="_blank">Punch, 2025</a></div>
+<div class="card"><q>It costs 3,300 naira (around $2.20), half the price of a locally produced fabric.</q><a href="https://www.vanguardngr.com/2024/06/nigerias-adire-traders-feel-heat-from-china-inflation/" target="_blank">Vanguard (AFP), 2024</a></div>
+<div class="card"><q>since the influx of Chinese adire in the Nigeria market, many local producers have closed shop.</q><a href="https://guardian.ng/art/revue/nigerian-adire-going-going/" target="_blank">The Guardian Nigeria, 2023</a></div>
+</div></section>
+
+<section id="how" class="reveal"><h2>How it works</h2><div class="steps">
+<div class="step on"><div class="n">01</div><h3>Snap</h3><p>Photograph the front, the reverse, and a close edge or resist line.</p></div>
+<div class="step"><div class="n">02</div><h3>Check</h3><p>A DINOv2 vision model scores genuine hand-dyed vs factory print, or says "uncertain" instead of guessing.</p></div>
+<div class="step"><div class="n">03</div><h3>Trust</h3><p>Get reasons, find artisans on the map, and give verified pieces a QR passport.</p></div>
+</div></section>
+
+<div class="pat"><section class="reveal"><h2 style="color:#fff">Results on our held-out test set</h2><div class="stats">
+<div class="stat"><b data-n="27">0</b>test images</div><div class="stat"><b data-n="27">0</b>correct</div><div class="stat"><b data-n="0">0</b>prints called genuine</div><div class="stat"><b data-n="205">0</b>images collected</div></div>
+<p class="small" style="color:#fff">Small dataset, split by image. See model/EVAL.md in the repo for details.</p></section></div>
+
+<section class="reveal"><h2>Built for Nigeria</h2><div class="feat">
+<div class="f"><h3>Photo check</h3><p>Verdict, confidence and plain-language reasons.</p></div>
+<div class="f"><h3>Artisan map</h3><p>Find makers near you.</p></div>
+<div class="f"><h3>QR passport</h3><p>A shareable record for verified pieces.</p></div>
+<div class="f"><h3>Local languages</h3><p>Chat and voice in English, Yoruba, Hausa, Igbo and Pidgin.</p></div>
+</div></section>
+
+<section class="reveal"><h2>Questions</h2>
+<details><summary>Is this a certificate?</summary><p>No. It's a decision aid with a confidence score, and it abstains when unsure.</p></details>
+<details><summary>Where did the data come from?</summary><p>Our teammate photographed genuine pieces at a workshop in Ibadan, alongside factory prints from the market.</p></details>
+<details><summary>What's next?</summary><p>More artisans and pieces, naira price guidance, and partnerships with cooperatives.</p></details>
+</section>
+<footer class="pat">AdireTrust by team spyders · Ogun Innovate Hackathon 2026 · <a href="/" style="color:var(--gold)">Open the app</a></footer>
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');e.target.querySelectorAll('[data-n]').forEach(c=>{let t=+c.dataset.n,i=0,s=Math.max(1,Math.ceil(t/40));const iv=setInterval(()=>{i=Math.min(t,i+s);c.textContent=i;if(i>=t)clearInterval(iv)},30)});io.unobserve(e.target)}}),{threshold:.2});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+document.querySelectorAll('.step').forEach(s=>s.onclick=()=>{document.querySelectorAll('.step').forEach(x=>x.classList.remove('on'));s.classList.add('on')});
+</script></body></html>
