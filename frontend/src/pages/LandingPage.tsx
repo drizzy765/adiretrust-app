@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { ResistMotif } from "../components/ResistMotif";
 
 const NEWS = [
   {
@@ -34,7 +35,7 @@ const STEPS = [
   {
     n: "03",
     title: "Trust",
-    body: "Get reasons, find artisans on the map, and give verified pieces a QR passport.",
+    body: "Read the reasons, then ask follow-up questions in English, Yoruba, Hausa, Igbo or Pidgin.",
   },
 ] as const;
 
@@ -47,9 +48,8 @@ const STATS = [
 
 const FEATURES = [
   { title: "Photo check", body: "Verdict, confidence and plain-language reasons." },
-  { title: "Artisan map", body: "Find makers near you." },
-  { title: "QR passport", body: "A shareable record for verified pieces." },
-  { title: "Local languages", body: "Chat and voice in English, Yoruba, Hausa, Igbo and Pidgin." },
+  { title: "Local languages", body: "Chat in English, Yoruba, Hausa, Igbo and Pidgin." },
+  { title: "Honest when unsure", body: "It abstains when it is not sure, instead of guessing." },
 ] as const;
 
 const FAQ = [
@@ -68,67 +68,62 @@ const FAQ = [
 ] as const;
 
 export function LandingPage() {
-  const [activeStep, setActiveStep] = useState(0);
-
   return (
-    <div className="bg-resist text-ink pb-[calc(4.5rem+env(safe-area-inset-bottom))]">
-      <section className="bg-resist-pattern px-[6vw] pt-10 pb-16 text-resist sm:pt-14 sm:pb-20">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+    <div className="bg-resist text-ink">
+      <section className="relative overflow-hidden bg-indigo-ink text-resist">
+        <ResistMotif className="pointer-events-none absolute -right-16 -top-10 h-[28rem] w-[28rem] text-white/15" />
+        <ResistMotif className="pointer-events-none absolute -bottom-24 -left-20 h-[22rem] w-[22rem] text-gold/15" />
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 pt-28 pb-16 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:pt-32 lg:pb-24">
           <div>
-            <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] leading-[1.05] font-semibold text-white">
-              Is your Adire <em className="text-gold not-italic">hand-dyed</em> or a factory print?
+            <p className="text-xs font-medium tracking-[0.18em] text-gold uppercase">Abeokuta cloth check</p>
+            <h1 className="mt-4 font-display text-[clamp(2.6rem,6vw,5.1rem)] leading-[0.98] font-medium text-resist">
+              Is your Adire hand-dyed, or a factory print?
             </h1>
-            <p className="mt-5 max-w-[560px] text-lg leading-relaxed text-white/85 sm:text-xl">
-              Snap one photo. AdireTrust checks it, explains why, and connects you to real artisans, so buyers stop
-              overpaying for fakes and makers keep their craft alive.
+            <p className="mt-6 max-w-[36rem] text-base leading-relaxed text-resist/80 sm:text-lg">
+              Snap one photo. AdireTrust checks it and explains why, so buyers stop overpaying for fakes and makers
+              keep their craft alive.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link
-                to="/check"
-                className="inline-flex min-h-12 items-center justify-center rounded-full bg-gold px-6 py-3 text-base font-bold text-indigo-ink transition hover:-translate-y-0.5"
-              >
+            <div className="mt-9 flex flex-wrap items-center gap-3">
+              <Link to="/check" className="btn-primary">
                 Check a cloth
               </Link>
-              <a
-                href="#how"
-                className="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-white px-6 py-3 text-base font-bold text-white transition hover:-translate-y-0.5"
-              >
+              <a href="#how" className="btn-secondary text-resist">
                 How it works
               </a>
             </div>
           </div>
-          <div className="adire-viewfinder relative aspect-[4/5] overflow-hidden rounded-[18px]">
+          <figure className="photo-frame aspect-[4/5] max-h-[36rem] w-full justify-self-end lg:max-h-none">
             <img
               src="/workshop.jpg"
               alt="Our teammate Paul collecting data at a workshop in Ibadan"
               className="h-full w-full object-cover object-center"
             />
-            <div className="adire-scan-line absolute right-[18px] left-[18px] h-[3px] bg-gold shadow-[0_0_18px_#e0a82e]" />
-            <p className="absolute bottom-3.5 left-3.5 rounded-lg bg-[rgba(15,27,61,0.8)] px-3 py-1.5 text-[13px] text-white">
+            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1b2a6b]/90 to-transparent px-5 pt-16 pb-5 text-sm text-resist">
               Our teammate Paul collecting data at a workshop in Ibadan
-            </p>
-          </div>
+            </figcaption>
+          </figure>
         </div>
       </section>
 
       <Reveal>
-        <section className="px-[6vw] py-[70px]">
+        <section id="news" className="scroll-mt-24 px-5 py-20 sm:px-8 sm:py-28">
           <div className="mx-auto max-w-6xl">
-            <h2 className="mb-7 font-display text-[clamp(1.75rem,3.5vw,2.625rem)] font-semibold text-indigo-ink">
-              The problem is real
+            <p className="text-xs font-medium tracking-[0.18em] text-indigo-ink/60 uppercase">The problem in the news</p>
+            <h2 className="mt-3 max-w-2xl font-display text-[clamp(2rem,4vw,3.4rem)] leading-[1.1] font-medium text-indigo-ink">
+              Fake Adire is already in the market.
             </h2>
-            <div className="grid gap-5 md:grid-cols-3">
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
               {NEWS.map((item) => (
                 <article
                   key={item.href}
-                  className="rounded-[14px] border-l-[6px] border-indigo-dye bg-white p-6 shadow-[0_6px_24px_rgba(0,0,0,0.06)]"
+                  className="shadow-card rounded-2xl border border-cloth/70 bg-[#fffaf3] p-7 transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(27,42,107,0.12)]"
                 >
-                  <q className="mb-3.5 block text-[17px] leading-relaxed">{item.quote}</q>
+                  <q className="font-display block text-xl leading-snug text-indigo-ink">{item.quote}</q>
                   <a
                     href={item.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-sm font-semibold text-indigo-dye"
+                    className="mt-6 inline-block text-sm font-semibold text-indigo-ink underline decoration-gold decoration-2 underline-offset-4"
                   >
                     {item.source}
                   </a>
@@ -140,62 +135,21 @@ export function LandingPage() {
       </Reveal>
 
       <Reveal>
-        <section id="how" className="px-[6vw] pb-[70px]">
+        <section id="how" className="scroll-mt-24 px-5 pb-20 sm:px-8 sm:pb-28">
           <div className="mx-auto max-w-6xl">
-            <h2 className="mb-7 font-display text-[clamp(1.75rem,3.5vw,2.625rem)] font-semibold text-indigo-ink">
-              How it works
+            <p className="text-xs font-medium tracking-[0.18em] text-indigo-ink/60 uppercase">How it works</p>
+            <h2 className="mt-3 font-display text-[clamp(2rem,4vw,3.4rem)] leading-[1.1] font-medium text-indigo-ink">
+              From a single photograph to a reasoned verdict.
             </h2>
-            <div className="grid gap-5 md:grid-cols-3">
-              {STEPS.map((step, index) => {
-                const on = activeStep === index;
-                return (
-                  <button
-                    key={step.n}
-                    type="button"
-                    onClick={() => setActiveStep(index)}
-                    className={
-                      "rounded-[14px] border-2 bg-white p-7 text-left transition " +
-                      (on
-                        ? "border-gold -translate-y-1"
-                        : "border-transparent hover:border-gold hover:-translate-y-1")
-                    }
-                  >
-                    <div className="text-[40px] leading-none font-extrabold text-gold">{step.n}</div>
-                    <h3 className="mt-2 font-display text-xl font-semibold text-indigo-ink">{step.title}</h3>
-                    <p className="mt-1 text-base leading-relaxed text-ink/75">{step.body}</p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-      </Reveal>
-
-      <Reveal>
-        <section className="bg-resist-pattern px-[6vw] py-[70px] text-white">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="mb-7 font-display text-[clamp(1.75rem,3.5vw,2.625rem)] font-semibold text-white">
-              Results on our held-out test set
-            </h2>
-            <StatsGrid />
-            <p className="mt-3.5 text-[13px] text-white/70">
-              Small dataset, split by image. See model/EVAL.md in the repo for details.
-            </p>
-          </div>
-        </section>
-      </Reveal>
-
-      <Reveal>
-        <section className="px-[6vw] py-[70px]">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="mb-7 font-display text-[clamp(1.75rem,3.5vw,2.625rem)] font-semibold text-indigo-ink">
-              Built for Nigeria
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {FEATURES.map((feature) => (
-                <article key={feature.title} className="rounded-xl bg-white p-[22px]">
-                  <h3 className="mb-1.5 font-semibold text-indigo-dye">{feature.title}</h3>
-                  <p className="text-base leading-relaxed text-ink/80">{feature.body}</p>
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              {STEPS.map((step) => (
+                <article
+                  key={step.n}
+                  className="shadow-card rounded-2xl border border-cloth/70 bg-[#fffaf3] p-8 transition duration-300 hover:-translate-y-1"
+                >
+                  <p className="font-display text-4xl text-gold">{step.n}</p>
+                  <h3 className="mt-4 font-display text-2xl font-medium text-indigo-ink">{step.title}</h3>
+                  <p className="mt-3 text-base leading-relaxed text-muted">{step.body}</p>
                 </article>
               ))}
             </div>
@@ -204,26 +158,105 @@ export function LandingPage() {
       </Reveal>
 
       <Reveal>
-        <section className="px-[6vw] pb-[70px]">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="mb-7 font-display text-[clamp(1.75rem,3.5vw,2.625rem)] font-semibold text-indigo-ink">
-              Questions
+        <section id="results" className="relative scroll-mt-24 overflow-hidden bg-indigo-ink px-5 py-20 text-resist sm:px-8 sm:py-28">
+          <ResistMotif className="pointer-events-none absolute right-[-4rem] bottom-[-5rem] h-80 w-80 text-white/10" />
+          <div className="relative mx-auto max-w-6xl">
+            <p className="text-xs font-medium tracking-[0.18em] text-gold uppercase">Held-out test set</p>
+            <h2 className="mt-3 font-display text-[clamp(2rem,4vw,3.4rem)] leading-[1.1] font-medium">
+              Results on our held-out test set
             </h2>
-            {FAQ.map((item) => (
-              <details key={item.q} className="mb-3 rounded-xl bg-white px-[22px] py-[18px]">
-                <summary className="cursor-pointer font-bold text-indigo-ink">{item.q}</summary>
-                <p className="mt-2.5 text-base leading-relaxed text-ink/80">{item.a}</p>
-              </details>
-            ))}
+            <StatsGrid />
+            <p className="mt-8 max-w-2xl text-sm text-resist/70">
+              Small dataset, split by image. See model/EVAL.md in the repo for details.
+            </p>
           </div>
         </section>
       </Reveal>
 
-      <footer className="bg-resist-pattern px-[6vw] py-[30px] text-sm text-white/90">
-        AdireTrust by team spyders · Ogun Innovate Hackathon 2026 ·{" "}
-        <Link to="/check" className="font-semibold text-gold">
-          Open the app
-        </Link>
+      <Reveal>
+        <section id="features" className="scroll-mt-24 px-5 py-20 sm:px-8 sm:py-28">
+          <div className="mx-auto max-w-6xl">
+            <p className="text-xs font-medium tracking-[0.18em] text-indigo-ink/60 uppercase">Built for Nigeria</p>
+            <h2 className="mt-3 font-display text-[clamp(2rem,4vw,3.4rem)] leading-[1.1] font-medium text-indigo-ink">
+              A check, a map, a passport, and a conversation.
+            </h2>
+            <div className="mt-12 grid gap-5 sm:grid-cols-2">
+              {FEATURES.map((feature) => (
+                <article
+                  key={feature.title}
+                  className="shadow-card rounded-2xl border border-cloth/70 bg-[#fffaf3] p-8 transition duration-300 hover:-translate-y-1"
+                >
+                  <h3 className="font-display text-2xl font-medium text-indigo-ink">{feature.title}</h3>
+                  <p className="mt-3 text-base leading-relaxed text-muted">{feature.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
+      <Reveal>
+        <section id="story" className="scroll-mt-24 px-5 pb-20 sm:px-8 sm:pb-28">
+          <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
+            <figure className="photo-frame aspect-[4/5]">
+              <img
+                src="/workshop.jpg"
+                alt="Our teammate Paul collecting data at a workshop in Ibadan"
+                className="h-full w-full object-cover object-center"
+              />
+            </figure>
+            <div>
+              <p className="text-xs font-medium tracking-[0.18em] text-indigo-ink/60 uppercase">Workshop story</p>
+              <h2 className="mt-3 font-display text-[clamp(2rem,4vw,3.4rem)] leading-[1.1] font-medium text-indigo-ink">
+                Photographed where the cloth is made.
+              </h2>
+              <p className="mt-6 text-lg leading-relaxed text-ink/85">
+                Our teammate Paul collected genuine pieces at a workshop in Ibadan, then photographed factory prints
+                from the market. That fieldwork sits behind every check.
+              </p>
+              <Link to="/check" className="btn-primary mt-8">
+                Check a cloth
+              </Link>
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
+      <Reveal>
+        <section id="faq" className="scroll-mt-24 px-5 pb-20 sm:px-8 sm:pb-28">
+          <div className="mx-auto max-w-3xl">
+            <p className="text-xs font-medium tracking-[0.18em] text-indigo-ink/60 uppercase">Questions</p>
+            <h2 className="mt-3 font-display text-[clamp(2rem,4vw,3.4rem)] leading-[1.1] font-medium text-indigo-ink">
+              What this is, and what it is not.
+            </h2>
+            <div className="mt-10 space-y-4">
+              {FAQ.map((item) => (
+                <details
+                  key={item.q}
+                  className="shadow-card group rounded-2xl border border-cloth/70 bg-[#fffaf3] px-6 py-5"
+                >
+                  <summary className="cursor-pointer list-none font-display text-xl font-medium text-indigo-ink marker:hidden">
+                    <span className="flex items-center justify-between gap-4">
+                      {item.q}
+                      <span className="text-gold transition group-open:rotate-45">+</span>
+                    </span>
+                  </summary>
+                  <p className="mt-3 text-base leading-relaxed text-muted">{item.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
+      <footer className="relative overflow-hidden bg-indigo-ink px-5 py-12 text-sm text-resist/80 sm:px-8">
+        <ResistMotif className="pointer-events-none absolute right-0 top-0 h-40 w-40 text-white/10" />
+        <div className="relative mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+          <p>AdireTrust by team spyders · Ogun Innovate Hackathon 2026</p>
+          <Link to="/check" className="font-semibold text-gold">
+            Open the app
+          </Link>
+        </div>
       </footer>
     </div>
   );
@@ -231,36 +264,32 @@ export function LandingPage() {
 
 function Reveal({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) {
-      setVisible(true);
+      el.classList.add("in");
       return;
     }
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            setVisible(true);
+            entry.target.classList.add("in");
             io.unobserve(entry.target);
           }
         }
       },
-      { threshold: 0.2 },
+      { threshold: 0.16 },
     );
     io.observe(el);
     return () => io.disconnect();
   }, []);
 
   return (
-    <div
-      ref={ref}
-      className={visible ? "translate-y-0 opacity-100 transition duration-700" : "translate-y-6 opacity-0 transition duration-700"}
-    >
+    <div ref={ref} className="reveal">
       {children}
     </div>
   );
@@ -289,13 +318,13 @@ function StatsGrid() {
   }, []);
 
   return (
-    <div ref={ref} className="grid gap-5 text-center sm:grid-cols-2 lg:grid-cols-4">
+    <div ref={ref} className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
       {STATS.map((stat) => (
-        <div key={stat.label}>
-          <b className="block font-display text-[46px] leading-none font-semibold text-gold">
+        <div key={stat.label} className="border-t border-white/20 pt-5">
+          <p className="font-display text-5xl leading-none font-medium text-gold sm:text-6xl">
             <CountUp target={stat.n} active={active} />
-          </b>
-          <span className="mt-2 block text-base text-white">{stat.label}</span>
+          </p>
+          <p className="mt-3 text-sm leading-snug text-resist/80">{stat.label}</p>
         </div>
       ))}
     </div>
