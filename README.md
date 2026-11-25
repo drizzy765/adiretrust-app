@@ -2,31 +2,48 @@
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/drizzy765/adiretrust-app/blob/main/model/train_colab.ipynb)
 
-Phone-camera app that helps a buyer check whether a cloth looks like **hand-dyed Abeokuta adire** or a **factory print**. It returns a verdict, a confidence score, a written explanation, and (later) buy/sell price guidance and a QR Adire Passport.
+Phone-camera app that helps a buyer check whether a cloth looks like **hand-dyed Abeokuta adire** or a **factory print**. It returns a verdict, a confidence score, a written explanation, price guidance, and a QR Adire Passport.
 
 This is a research and demo tool, not a certification standard. A photo alone cannot prove how a cloth was made. Model results are limited to the small, single-workshop evaluation described below and in [`model/EVAL.md`](model/EVAL.md).
 
-Built for the [Ogun Digital Summit Hackathon](https://www.ogundigitalsummit.com/hackathon) (showcase 25 November 2026, Ogun Tech Hub, Kobape, Abeokuta; AI/ML track).
+Built for the [Ogun Digital Summit Hackathon](https://www.ogundigitalsummit.com/hackathon) (showcase 25 November 2026, Ogun Tech Hub, Kobape, Abeokuta; AI/ML track). Team **spyders**.
 
 Teammate work is in [`TASKS.md`](TASKS.md) (steps, files, done-criteria, handoffs, and deploy order).
 
+## Live URLs
+
+- **Frontend:** http://102.209.47.246 (Nobus, deploying)
+- **Backend API:** http://102.209.47.246:8000 (Nobus, live; `GET /health` ok)
+
+Serve the frontend over HTTP. The backend is plain HTTP, and a HTTPS frontend would be blocked by mixed content. Set `ALLOWED_ORIGINS=*` (or the frontend origin) on the backend so the browser can call the API.
+
 ## Team
 
-- **Timi** (Agoro Oluwatimilehin Teslim) — frontend, and help with training. Building the frontend now and deploying it on Nobus.
-- **David Ajibua** — FastAPI backend. Wired the model into `/check`; preparing the backend for Nobus deployment.
-- **Paul Adewole** — preprocessing and model training.
+- **Agoro Oluwatimilehin** — frontend, AI/ML
+- **David Ajibua** — backend, deploy
+- **Paul Adewole** — data collection, model training
 
-## Model results
+## Features
 
-From Paul's Colab run in commit [`c7350fb`](https://github.com/drizzy765/adiretrust-app/commit/c7350fb): frozen **DINOv2 ViT-S/14** plus logistic regression.
+- **Photo verdict.** `POST /check` returns `genuine_hand_dyed`, `factory_print`, or `uncertain`, with confidence, a written explanation, reasons, and price guidance.
+- **Sellers map.** `GET /sellers` plotted with Leaflet and OpenStreetMap tiles, plus an “Open in Google Maps” link.
+- **QR Adire Passport.** Result cards link to `/passport/:id`, served by `GET /passport/{id}`.
+- **Chat.** `POST /chat` in `en` / `yo` / `ha` / `ig` / `pcm` via Groq.
+- **Voice.** Intron speech-to-text and text-to-speech when those capabilities are available.
 
-- **204 of 205** images loaded (1 print, `IMG-20261123-WA0087.jpg`, failed to download).
-- Split: **train 151**, **val 26**, **test 27**.
-- **Test** at threshold 0.6: **27 of 27 correct** (12 genuine, 15 prints), **0 false-genuine**, **ROC-AUC 1.00**.
-- **Val:** 25 of 26 decided correctly, 1 abstained as uncertain, 0 errors.
+## Model
+
+Frozen **DINOv2 ViT-S/14** plus a logistic regression probe. Full numbers and matrices are in [`model/EVAL.md`](model/EVAL.md) (from Paul's Colab run in commit [`c7350fb`](https://github.com/drizzy765/adiretrust-app/commit/c7350fb)).
+
+- **Data:** 81 genuine photos collected by teammate Paul Adewole at a workshop in Ibadan, 100 factory prints, and 24 synthetic images (train-only). 204 of 205 images loaded (1 print, `IMG-20261123-WA0087.jpg`, failed to download).
+- **Split:** train 151 / val 26 / test 27.
+- **Test** (threshold 0.6): **27/27** correct (12 genuine, 15 prints), **0 prints called genuine**, **AUC 1.00**.
+- **Val:** 25/26 decided correctly, 1 abstained as uncertain, 0 errors.
 - Val-chosen threshold **0.5**; app default **0.6**.
 
-Pitch line: “On 27 held-out real photos, 100% correct and never called a factory print genuine.” Caveat: a small set from one workshop. Do not claim a general accuracy.
+Pitch line: “On 27 held-out real photos, 100% correct and never called a factory print genuine.”
+
+**Caveats:** this is a small dataset from one workshop. Do not claim a general accuracy. Current `piece_id` values are provisional (one image = one id), so the split is effectively by image, not by cloth piece.
 
 ## Weights
 
@@ -37,6 +54,7 @@ The trained probe and `label_map.json` are in [`model/weights/`](model/weights/)
 ## What works today
 
 - FastAPI backend: `GET /health`, `/capabilities`, `/check`, `/sellers`, `/passport/{id}`, `/chat`, and Intron voice routes. `/check` uses the committed probe and returns 503 if model artifacts are missing or cannot load. Provider keys remain server-side.
+- Frontend: Vite + React Check, Sellers, Passport, and Chat pages (see [`frontend/README.md`](frontend/README.md)). Without `VITE_API_URL` at build or dev time, the frontend runs in mock mode.
 - Sellers and passports can load reviewed JSON records from `DATA_DIR`; absent records still produce clearly labeled placeholders.
 - Labels and splits in `data/labels/`. Photos are in [AdireTrust-data on Google Drive](https://drive.google.com/drive/folders/1k1j2mNU1H5ST74AJp3qGEly67kEdnPNN): 81 genuine, 100 prints in `raw/osun_prints/`, and 24 train-only synthetics. The Colab notebook downloads each file by Drive id (see `data/README.md` and `model/train_colab.ipynb`).
 - Plan, design system, deploy notes, and agent skills.
@@ -53,7 +71,7 @@ git clone --depth 1 https://github.com/drizzy765/adiretrust-app.git
 
 ```
 backend/     FastAPI app, Dockerfile, tests
-frontend/     Vite + React (scaffold now; see frontend/README.md)
+frontend/     Vite + React (Check, Sellers, Passport, Chat)
 model/        DINOv2 ViT-S/14 linear probe; commit weights to model/weights/
 data/         labels/splits in git; images are in Drive (see data/README.md)
 docs/         PLAN.md, deploy.md, consent and methodology
@@ -62,7 +80,19 @@ skills/       teammate / coding-agent skills
 TASKS.md      teammate steps, handoffs, and deploy order
 ```
 
-## Quick start (API)
+## Run locally
+
+Env vars for the backend (see `.env.example` or `backend/.env.example`): `GROQ_API_KEY`, `INTRON_API_KEY`, `ALLOWED_ORIGINS`, `MODEL_DIR`. Chat and voice need the provider keys; photo check needs the committed weights in `MODEL_DIR`.
+
+```bash
+# Backend
+pip install -r backend/requirements.txt
+cd backend && uvicorn main:app --port 8000
+```
+
+`GET http://localhost:8000/health` should return `{"status":"ok"}`.
+
+Optional local setup with a venv and tests:
 
 ```bash
 cd backend
@@ -74,13 +104,20 @@ pytest
 uvicorn main:app --reload --port 8000
 ```
 
-`GET http://localhost:8000/health` should return `{"status":"ok"}`.
+```bash
+# Frontend
+cd frontend
+npm ci
+VITE_API_URL=http://localhost:8000 npm run dev
+```
+
+Without `VITE_API_URL`, the frontend runs in mock mode.
 
 Train or re-run the DINOv2 probe in Colab: [Open in Colab](https://colab.research.google.com/github/drizzy765/adiretrust-app/blob/main/model/train_colab.ipynb) (`model/train_colab.ipynb`).
 
 ## API contract (frontend)
 
-Timi can start the frontend now. Talk to the API at `VITE_API_URL` (default `http://localhost:8000`). Use mocks until David posts the public Nobus backend URL in **Live URLs**.
+Talk to the live API at http://102.209.47.246:8000, or set `VITE_API_URL` (default for local work: `http://localhost:8000`). Without `VITE_API_URL`, the frontend uses mocks.
 
 | Method | Route | Request | Response |
 | --- | --- | --- | --- |
@@ -97,16 +134,21 @@ Timi can start the frontend now. Talk to the API at `VITE_API_URL` (default `htt
 
 Voice routes return `503` with `VOICE_UNAVAILABLE` if Intron is not configured; keep using text chat. Groq and Intron keys stay on the server. CORS is `ALLOWED_ORIGINS` (comma-separated exact origins).
 
-## Live URLs
+## Deploy on Nobus
 
-Not deployed yet. **David posts the public Nobus backend URL here after `GET /health` and `GET /docs` pass, and tells the team, before the frontend is deployed.** Timi then deploys the frontend on Nobus and David adds that origin to `ALLOWED_ORIGINS`. Render/Vercel are only a fallback if Nobus is blocked.
+Deploy **backend and frontend to Nobus Cloud**. How-to: [`docs/deploy.md`](docs/deploy.md). Full order: [`TASKS.md`](TASKS.md). Pass `GROQ_API_KEY` and `INTRON_API_KEY` to the backend container if you want chat and voice. Open inbound TCP 80 and 8000 in the Nobus firewall.
 
-- Backend (Nobus Cube): _pending_
-- Frontend (Nobus): _pending_
+```bash
+# Backend (from the repo root)
+docker build -t adire .
+docker run -d -p 8000:8000 -e ALLOWED_ORIGINS=* adire
 
-## Deploy
+# Frontend (VITE_API_URL is baked in at build time)
+docker build --build-arg VITE_API_URL=http://102.209.47.246:8000 -t adire-web frontend
+docker run -d -p 80:80 adire-web
+```
 
-Deploy **backend and frontend to Nobus Cloud**. Order: weights pushed → backend deployed → URL shared in **Live URLs** → frontend deployed (`VITE_API_URL`) → CORS updated → end-to-end test → offline laptop backup. Render/Vercel remain the fallback. How-to: [`docs/deploy.md`](docs/deploy.md). Full order: [`TASKS.md`](TASKS.md).
+Without `VITE_API_URL` at build time, the frontend image runs in mock mode.
 
 ## Rules
 
