@@ -1,0 +1,31 @@
+{
+  "classes": [
+    "factory_print",
+    "genuine_hand_dyed"
+  ],
+  "backbone": "dinov2_vits14",
+  "classifier": "logistic_regression",
+  "image_size": 224,
+  "mean": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "std": [
+    0.229,
+    0.224,
+    0.225
+  ],
+  "confidence_threshold_default": 0.6,
+  "confidence_threshold_chosen": 0.5,
+  "threshold_selection": "val sweep: min false-genuine, then max genuine precision, then coverage",
+  "created_utc": "2026-11-25T11:24:17Z",
+  "n_train": 151,
+  "n_val": 26,
+  "n_test": 27,
+  "train_label_counts": {
+    "genuine_hand_dyed": 65,
+    "factory_print": 86
+  },
+  "notes": "Frozen DINOv2 ViT-S/14 linear probe. Do not treat this as a certification model."
+}
