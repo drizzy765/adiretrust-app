@@ -9,6 +9,8 @@ This is a research and demo tool, not a certification standard. A photo alone ca
 
 Built for the [Ogun Digital Summit Hackathon](https://www.ogundigitalsummit.com/hackathon) (showcase 25 November 2026, Ogun Tech Hub, Kobape, Abeokuta; AI/ML track).
 
+Teammate work is in [`TASKS.md`](TASKS.md) (steps, files, done-criteria, handoffs, and deploy order).
+
 ## Team
 
 - **Timi** (Agoro Oluwatimilehin Teslim) — frontend, and help with training
@@ -33,6 +35,7 @@ data/         labeled images and manifests
 docs/         PLAN.md, deploy.md, consent and methodology
 design/       DESIGN_SYSTEM.md
 skills/       teammate / coding-agent skills
+TASKS.md      teammate steps, handoffs, and deploy order
 ```
 
 ## Quick start (API)
@@ -51,9 +54,16 @@ uvicorn main:app --reload --port 8000
 
 Frontend scaffolding comes next. Train the DINOv2 probe in Colab: [Open in Colab](https://colab.research.google.com/github/drizzy765/adiretrust-app/blob/main/model/train_colab.ipynb) (`model/train_colab.ipynb`). See `docs/PLAN.md`.
 
+## Live URLs
+
+Not deployed yet. **David posts the public Nobus backend URL here after `GET /health` and `GET /docs` pass, and tells the team, before the frontend is deployed.** Render is only a fallback if Nobus is blocked.
+
+- Backend (Nobus Cube): _pending_
+- Frontend: _pending_
+
 ## Deploy
 
-Render (backend, free tier) + Vercel (frontend) is the primary path. Nobus Cube is optional. The booth also needs an offline laptop copy. Details: `docs/deploy.md`.
+Deploy **backend to Nobus Cube first**, share the URL in **Live URLs**, then deploy the frontend (Nobus or Vercel) and update `ALLOWED_ORIGINS`. Render is a fallback only if Nobus is blocked. The booth also needs an offline laptop copy. Order: [`TASKS.md`](TASKS.md). How-to: `docs/deploy.md`.
 
 ## Rules
 
