@@ -1,6 +1,14 @@
 # AdireTrust frontend
 
-Vite + React interactive UI. This folder is a placeholder: Timi’s coding agent should scaffold the app here (`npm create vite@latest . -- --template react`) and build against the design system.
+Vite + React + TypeScript UI. `VITE_API_URL` is the API origin with no trailing slash. Leave it empty to use local mocks. Never put Groq or Intron keys in a `VITE_*` variable.
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Nobus image: `docker build -t adiretrust-web ./frontend --build-arg VITE_API_URL=https://your-api.example`
 
 ## Product flow
 

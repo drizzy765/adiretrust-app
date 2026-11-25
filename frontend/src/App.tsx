@@ -1,0 +1,29 @@
+import { lazy, Suspense } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { Shell } from "./components/Shell";
+import { CheckPage } from "./pages/CheckPage";
+
+const SellersPage = lazy(() => import("./pages/SellersPage").then((mod) => ({ default: mod.SellersPage })));
+const PassportPage = lazy(() => import("./pages/PassportPage").then((mod) => ({ default: mod.PassportPage })));
+const ChatPage = lazy(() => import("./pages/ChatPage").then((mod) => ({ default: mod.ChatPage })));
+
+function PageFallback() {
+  return <p className="px-4 py-8 text-base text-muted">Loading…</p>;
+}
+
+export default function App() {
+  return (
+    <Shell>
+      <Suspense fallback={<PageFallback />}>
+        <Routes>
+          <Route path="/" element={<CheckPage />} />
+          <Route path="/sellers" element={<SellersPage />} />
+          <Route path="/passport" element={<PassportPage />} />
+          <Route path="/passport/:id" element={<PassportPage />} />
+          <Route path="/chat" element={<ChatPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
+    </Shell>
+  );
+}
