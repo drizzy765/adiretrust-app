@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/:path*", "destination": "http://102.209.47.246:8000/:path*" },
+    { "source": "/api/:path*", "destination": "https://adiretrust-api.onrender.com/:path*" },
     { "source": "/((?!api/|landing\\.html|workshop\\.jpg|hero\\.jpg|favicon\\.svg|assets/).*)", "destination": "/index.html" }
   ]
 }
