@@ -132,11 +132,11 @@ function Hero({ onCamera, onUpload }: { onCamera: () => void; onUpload: () => vo
             Front, then the back if you can. A close edge or resist line helps.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-            <button type="button" onClick={onCamera} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-indigo-dye px-5 py-3 text-base font-semibold text-resist">
+            <button type="button" onClick={onCamera} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-gold px-5 py-3 text-base font-semibold text-indigo-ink">
               <CameraIcon className="h-5 w-5" />
               Take a photo
             </button>
-            <button type="button" onClick={onUpload} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-indigo-dye bg-resist px-5 py-3 text-base font-semibold text-indigo-dye">
+            <button type="button" onClick={onUpload} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-indigo-ink bg-resist px-5 py-3 text-base font-semibold text-indigo-ink">
               <UploadIcon className="h-5 w-5" />
               Upload a photo
             </button>
@@ -160,7 +160,7 @@ function ScanOverlay({ showMotion }: { showMotion: boolean }) {
             transition={{ duration: 1.8, ease: EASE }}
           />
           <motion.div
-            className="absolute inset-x-0 h-[2px] bg-indigo-dye"
+            className="absolute inset-x-0 h-[2px] bg-gold"
             initial={{ top: "0%" }}
             animate={{ top: "100%" }}
             transition={{ duration: 0.9, ease: EASE, repeat: 1 }}
@@ -228,7 +228,7 @@ function ResultCard({ result }: { result: CheckResponse }) {
   ];
 
   return (
-    <article className="mt-4 rounded-[16px] border border-cloth bg-resist px-5 py-6" aria-live="polite">
+    <article className="mt-4 rounded-[16px] border border-cloth border-l-[6px] border-l-indigo-dye bg-resist px-5 py-6 shadow-[0_6px_24px_rgba(0,0,0,0.06)]" aria-live="polite">
       <Stamp reduce={reduce} tone={tone}>
         {sections[0]}
       </Stamp>

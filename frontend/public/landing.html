@@ -25,10 +25,10 @@ footer{padding:30px 6vw;color:#fff;font-size:14px;opacity:.9}.small{font-size:13
 @media(max-width:800px){.hero,.news,.steps,.stats,.feat{grid-template-columns:1fr}}
 .reveal{opacity:0;transform:translateY(24px);transition:.7s}.reveal.in{opacity:1;transform:none}
 </style></head><body>
-<div class="pat"><nav><b>Adire<span>Trust</span></b><a class="btn" href="/">Open the app</a></nav>
+<div class="pat"><nav><b>Adire<span>Trust</span></b><a class="btn" href="/check">Open the app</a></nav>
 <div class="hero"><div><h1>Is your Adire <em>hand-dyed</em> or a factory print?</h1>
 <p>Snap one photo. AdireTrust checks it, explains why, and connects you to real artisans, so buyers stop overpaying for fakes and makers keep their craft alive.</p>
-<a class="btn" href="/">Check a cloth</a><a class="btn ghost" href="#how">How it works</a></div>
+<a class="btn" href="/check">Check a cloth</a><a class="btn ghost" href="#how">How it works</a></div>
 <div class="photo"><div class="scan"></div><div class="cap">Our teammate Paul collecting data at a workshop in Ibadan</div></div></div></div>
 
 <section class="reveal"><h2>The problem is real</h2><div class="news">
@@ -59,7 +59,7 @@ footer{padding:30px 6vw;color:#fff;font-size:14px;opacity:.9}.small{font-size:13
 <details><summary>Where did the data come from?</summary><p>Our teammate photographed genuine pieces at a workshop in Ibadan, alongside factory prints from the market.</p></details>
 <details><summary>What's next?</summary><p>More artisans and pieces, naira price guidance, and partnerships with cooperatives.</p></details>
 </section>
-<footer class="pat">AdireTrust by team spyders · Ogun Innovate Hackathon 2026 · <a href="/" style="color:var(--gold)">Open the app</a></footer>
+<footer class="pat">AdireTrust by team spyders · Ogun Innovate Hackathon 2026 · <a href="/check" style="color:var(--gold)">Open the app</a></footer>
 <script>
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');e.target.querySelectorAll('[data-n]').forEach(c=>{let t=+c.dataset.n,i=0,s=Math.max(1,Math.ceil(t/40));const iv=setInterval(()=>{i=Math.min(t,i+s);c.textContent=i;if(i>=t)clearInterval(iv)},30)});io.unobserve(e.target)}}),{threshold:.2});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));

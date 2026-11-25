@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Shell } from "./components/Shell";
 import { CheckPage } from "./pages/CheckPage";
+import { LandingPage } from "./pages/LandingPage";
 
 const SellersPage = lazy(() => import("./pages/SellersPage").then((mod) => ({ default: mod.SellersPage })));
 const PassportPage = lazy(() => import("./pages/PassportPage").then((mod) => ({ default: mod.PassportPage })));
@@ -16,7 +17,8 @@ export default function App() {
     <Shell>
       <Suspense fallback={<PageFallback />}>
         <Routes>
-          <Route path="/" element={<CheckPage />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/check" element={<CheckPage />} />
           <Route path="/sellers" element={<SellersPage />} />
           <Route path="/passport" element={<PassportPage />} />
           <Route path="/passport/:id" element={<PassportPage />} />

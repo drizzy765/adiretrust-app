@@ -7,13 +7,13 @@
 
   --color-ink: #1a1714;
   --color-muted: #5c574e;
-  --color-indigo-ink: #0b1f4a;
-  --color-indigo-dye: #1c3f8a;
-  --color-indigo-mid: #3a5fb0;
+  --color-indigo-ink: #0f1b3d;
+  --color-indigo-dye: #2b3f9e;
+  --color-indigo-mid: #2b3f9e;
   --color-indigo-mist: #d7def2;
-  --color-resist: #f7f4ec;
+  --color-resist: #f7f1e3;
   --color-cloth: #e6e0d2;
-  --color-gold: #c9a227;
+  --color-gold: #e0a82e;
   --color-kola: #6b3f1d;
   --color-genuine: #0f6b4c;
   --color-print: #9b2c2c;
@@ -21,7 +21,7 @@
 }
 
 html {
-  background: #f7f4ec;
+  background: #f7f1e3;
   color: #1a1714;
 }
 
@@ -29,7 +29,7 @@ body {
   margin: 0;
   min-height: 100dvh;
   font-family: var(--font-sans);
-  background: #f7f4ec;
+  background: #f7f1e3;
   color: #1a1714;
 }
 
@@ -43,8 +43,72 @@ a {
 }
 
 :focus-visible {
-  outline: 2px solid #3a5fb0;
+  outline: 2px solid #e0a82e;
   outline-offset: 2px;
+}
+
+.bg-resist-pattern {
+  background-color: #0f1b3d;
+  background-image:
+    radial-gradient(circle at 20px 20px, rgba(255, 255, 255, 0.08) 6px, transparent 7px),
+    radial-gradient(circle at 0 0, rgba(224, 168, 46, 0.1) 2px, transparent 3px);
+  background-size: 40px 40px, 20px 20px;
+}
+
+.adire-viewfinder::after {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border: 3px solid #e0a82e;
+  clip-path: polygon(
+    0 0,
+    18% 0,
+    18% 3px,
+    3px 3px,
+    3px 18%,
+    0 18%,
+    0 82%,
+    3px 82%,
+    3px calc(100% - 3px),
+    18% calc(100% - 3px),
+    18% 100%,
+    82% 100%,
+    82% calc(100% - 3px),
+    calc(100% - 3px) calc(100% - 3px),
+    calc(100% - 3px) 82%,
+    100% 82%,
+    100% 18%,
+    calc(100% - 3px) 18%,
+    calc(100% - 3px) 3px,
+    82% 3px,
+    82% 0,
+    100% 0,
+    100% 100%,
+    0 100%
+  );
+  pointer-events: none;
+}
+
+.adire-scan-line {
+  animation: adire-scan 2.6s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes adire-scan {
+  0%,
+  100% {
+    top: 20px;
+  }
+  50% {
+    top: calc(100% - 22px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adire-scan-line {
+    animation: none;
+    top: 40%;
+  }
 }
 
 .leaflet-container {
