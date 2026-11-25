@@ -60,7 +60,8 @@ export function SellersPage() {
         </button>
       </div>
       <section aria-label="Stall details" className="max-h-[46%] overflow-auto border-t border-cloth bg-resist px-4 pt-4 pb-3">
-        <h1 className="font-display text-[1.375rem] leading-tight font-semibold text-indigo-ink">Sellers</h1>
+        <h1 className="font-display text-[1.375rem] leading-tight font-semibold text-indigo-ink">Artisan map</h1>
+        <p className="mt-2 rounded-xl bg-gold/15 px-3 py-2 text-sm text-indigo-ink">Preview: pins are example locations while we onboard verified artisans.</p>
         {data?.note ? <p className="mt-1 max-w-[60ch] text-[13px] leading-[1.4] text-muted">{data.note}</p> : null}
         {error ? <p className="mt-2 text-base text-ink" role="alert">{error}</p> : null}
         {locationNote ? <p className="mt-2 text-[13px] text-muted">{locationNote}</p> : null}

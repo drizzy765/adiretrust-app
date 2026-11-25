@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/sellers",
+      "destination": "http://102.209.47.246:8000/sellers"
+    },
+    {
       "source": "/api/chat",
       "destination": "http://102.209.47.246:8000/chat"
     },

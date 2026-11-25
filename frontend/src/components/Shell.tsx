@@ -6,7 +6,7 @@ import { getLiveCapabilities, type LiveCapabilities } from "../lib/live";
 
 const ALL_LINKS = [
   { to: "/check", label: "Check", end: true, key: "check" as const },
-  { to: "/sellers", label: "Sellers", end: false, key: "sellers" as const },
+  { to: "/sellers", label: "Artisan map", end: false, key: "sellers" as const },
   { to: "/passport", label: "Passport", end: false, key: "passport" as const },
   { to: "/chat", label: "Chat", end: false, key: "chat" as const },
 ];
@@ -43,10 +43,10 @@ export function Shell({ children }: { children: ReactNode }) {
     health === "mock" ? "Demo data" : health === "ok" ? "API connected" : health === "down" ? "API unreachable" : "";
 
   const links = ALL_LINKS.filter((link) => {
-    if (!caps) return link.key === "check" || link.key === "chat";
+    if (!caps) return link.key === "check" || link.key === "chat" || link.key === "sellers";
     if (link.key === "check") return true;
     if (link.key === "chat") return caps.chat;
-    if (link.key === "sellers") return caps.sellers;
+    if (link.key === "sellers") return true;
     if (link.key === "passport") return caps.passport;
     return false;
   });

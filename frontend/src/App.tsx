@@ -4,6 +4,7 @@ import { Shell } from "./components/Shell";
 import { CheckPage } from "./pages/CheckPage";
 import { LandingPage } from "./pages/LandingPage";
 
+const SellersPage = lazy(() => import("./pages/SellersPage").then((mod) => ({ default: mod.SellersPage })));
 const ChatPage = lazy(() => import("./pages/ChatPage").then((mod) => ({ default: mod.ChatPage })));
 
 function PageFallback() {
@@ -18,7 +19,7 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/check" element={<CheckPage />} />
           <Route path="/chat" element={<ChatPage />} />
-          <Route path="/sellers" element={<Navigate to="/" replace />} />
+          <Route path="/sellers" element={<SellersPage />} />
           <Route path="/passport" element={<Navigate to="/" replace />} />
           <Route path="/passport/:id" element={<Navigate to="/" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
