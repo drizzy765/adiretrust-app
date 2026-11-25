@@ -1,5 +1,8 @@
 # AdireTrust
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/drizzy765/adiretrust-app/blob/main/model/train_colab.ipynb)
+
+
 Phone-camera app that helps a buyer check whether a cloth looks like **hand-dyed Abeokuta adire** or a **factory print**. It returns a verdict, a confidence score, a written explanation, and (later) buy/sell price guidance and a QR Adire Passport.
 
 This is a research and demo tool, not a certification standard. A photo alone cannot prove how a cloth was made. There is **no trained model in this repository yet**, and there is **no reported AdireTrust accuracy**. `POST /check` is an honest stub until a probe is trained and wired.
@@ -46,7 +49,7 @@ uvicorn main:app --reload --port 8000
 
 `GET http://localhost:8000/health` should return `{"status":"ok"}`.
 
-Frontend scaffolding and the DINOv2 probe come next. See `docs/PLAN.md`.
+Frontend scaffolding comes next. Train the DINOv2 probe in Colab: [Open in Colab](https://colab.research.google.com/github/drizzy765/adiretrust-app/blob/main/model/train_colab.ipynb) (`model/train_colab.ipynb`). See `docs/PLAN.md`.
 
 ## Deploy
 

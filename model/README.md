@@ -1,6 +1,20 @@
 # Model — DINOv2 linear probe
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/drizzy765/adiretrust-app/blob/main/model/train_colab.ipynb)
+
 This folder is for training and exporting the cloth-check classifier. The live API in `backend/` does not import torch and currently returns a stub.
+
+## Train on Google Colab (primary)
+
+All pretraining should run on a Colab GPU, not on the API host.
+
+1. Open [model/train_colab.ipynb](https://colab.research.google.com/github/drizzy765/adiretrust-app/blob/main/model/train_colab.ipynb) in Colab.
+2. Set the runtime to GPU.
+3. Run the cells: they clone this repo, optionally mount the missing print photos from Drive, extract frozen DINOv2 ViT-S/14 features, train a logistic regression probe, evaluate val/test with **computed** metrics, and write `EVAL.md`.
+4. Download `model/weights/dinov2_vits14_logreg.joblib` and `label_map.json` (or copy them to Drive), then commit those small files or hand them to David for `POST /check`.
+
+`model/train_probe.py --dry-run` remains a local way to inspect the manifest without torch. It does not replace the Colab notebook.
+
 
 ## Task
 
@@ -49,4 +63,4 @@ python -m pip install -r model/requirements-train.txt
 python model/train_probe.py --data-dir data --image-root data/processed/osun_workshop/224 --dry-run
 ```
 
-The skeleton supports `--dry-run` without torch so the script can be inspected on a small machine. Training itself needs torch and will fail clearly if the print photos are still missing.
+The skeleton supports `--dry-run` without torch so the script can be inspected on a small machine. Full training should use the Colab notebook. Training will fail clearly if the print photos are still missing.

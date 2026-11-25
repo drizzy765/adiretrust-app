@@ -29,15 +29,18 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # Model weights and training artifacts
-weights/
+# Large checkpoints and feature caches stay untracked.
+# Small probe exports in model/weights/ (*.joblib, *.json) ARE committable.
 *.pt
 *.pth
 *.ckpt
 *.onnx
 *.tflite
+*.safetensors
 model/checkpoints/
 model/runs/
-*.safetensors
+model/weights/*.npy
+model/weights/*.npz
 
 # OS / IDE
 .DS_Store
