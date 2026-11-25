@@ -1,0 +1,7 @@
+# Optional extras for train_probe.py only. Do not install these in the API image.
+# The FastAPI app must stay importable without torch.
+torch
+timm
+pandas
+scikit-learn
+Pillow

@@ -1,0 +1,3 @@
+filename,reason,reference,detail
+data/raw/osun_genuine/IMG-20251104-WA0001(1).jpg,duplicate_phash,data/raw/osun_genuine/IMG-20251104-WA0001.jpg,Perceptual hash Hamming distance <= 4.
+data/raw/osun_genuine/IMG-20251104-WA0004(1).jpg,duplicate_phash,data/raw/osun_genuine/IMG-20251104-WA0004.jpg,Perceptual hash Hamming distance <= 4.
