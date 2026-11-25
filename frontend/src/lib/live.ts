@@ -42,7 +42,7 @@ export async function getLiveCapabilities(): Promise<LiveCapabilities> {
         const voiceOut = availableFlag(source.voice_output);
         const voice = availableFlag(source.voice);
         if (photo !== null) caps.photoCheck = photo;
-        if (chat !== null) caps.chat = chat;
+        void chat; // chat is served by the Nobus backend via the Vercel proxy
         caps.voice = voice === true || voiceIn === true || voiceOut === true;
       }
     }
