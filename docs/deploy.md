@@ -23,17 +23,16 @@ Render is enough for the stub API and, later, a small CPU probe. A large vision 
 
 ## 3. Nobus Cube (optional)
 
-Use this if hackathon credits or a Nobus account are actually available. Nobus does **not** advertise a general free tier; confirm credits with mentors before spinning resources up. Billing starts when a compute/Cube instance is `running` and compute charges stop when it is shut down (volumes and IPs may still bill).
+Use this if a Nobus account is available. Check the Cube Cost Summary before launching.
 
-1. Sign in at [dashboard.nobus.io](https://dashboard.nobus.io). Docs: [nobus.io/documentation](https://nobus.io/documentation). Availability zones include `Nobus-wa-az1` and `Nobus-wa-az2`.
-2. **Managed Services → Cubes → New Cube.** Deploy from this Git repo or the backend Docker image. Prefer a single container that serves the API and, if useful, the built frontend.
-3. Small flavor is enough for the stub API (about 2 vCPU / 2–4 GiB). Watch the Cost Summary before confirming.
-4. When the Cube is Active, **Open Firewall** on the app port (8000 or 80). Ports are closed by default.
-5. Set the same env vars as Render. Optional: map a domain and **Enable SSL**.
-6. Optional later: Nobus FOS for uploaded images. Do **not** provision Kubernetes (NKE) or managed Postgres for the demo — SQLite or local files are enough.
-7. Shut the Cube down after the booth to stop compute charges.
-
-Public advertised pricing (do not invent a monthly flavor total): FCS listed “as low as ₦9,309/month”; FOS ₦60/GB-month and ₦2 per 1,000 requests. See [nobus.io/pricing](https://www.nobus.io/pricing).
+1. Sign in at [dashboard.nobus.io](https://dashboard.nobus.io) and open **Managed Services → Cubes → New Cube**.
+2. Choose **Custom Repository**, repo `https://github.com/drizzy765/adiretrust-app`, branch `main`, enable **Dockerfile Present**, and set **Container Port** to `8000`. The root `Dockerfile` builds from the repository root. Leave **Docker Compose Present** off.
+3. Select a small Linux flavor for the current API stub and review the Cost Summary. `/check` does not load a model or PyTorch.
+4. Set `ALLOWED_ORIGINS` to the frontend origin when it exists. Set `GROQ_API_KEY` for chat and `INTRON_API_KEY` for voice. These are optional; never commit their values.
+5. To load reviewed seller/passport records later, mount a directory at `/data` and set `DATA_DIR=/data`. Without records, those routes remain placeholders.
+6. When the Cube is active, open port `8000` in its firewall, or map a domain and enable Cube SSL for target port `8000`.
+7. Confirm `GET /health` and open `/docs`. The photo check remains a stub until a validated checkpoint and inference code are supplied.
+8. Shut down the Cube after the demo. Check for any separate volume or IP charges.
 
 ## 4. Offline laptop (required for the booth)
 

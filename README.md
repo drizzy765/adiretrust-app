@@ -19,9 +19,10 @@ Teammate work is in [`TASKS.md`](TASKS.md) (steps, files, done-criteria, handoff
 
 ## What works today
 
-- FastAPI skeleton: `GET /health`, `POST /check` (stub), `GET /sellers` (five PLACEHOLDER pins), `GET /passport/{id}` (stub)
+- FastAPI backend: `GET /health`, `/capabilities`, `/check` (validated upload; honest stub), `/sellers`, `/passport/{id}`, `/chat`, and Intron voice routes. Provider keys remain server-side.
+- Sellers and passports can load reviewed JSON records from `DATA_DIR`; absent records still produce clearly labeled placeholders.
 - Labels and splits in `data/labels/` (copied from [`drizzy765/AdireTrust`](https://github.com/drizzy765/AdireTrust)). Photos are in [AdireTrust-data on Google Drive](https://drive.google.com/drive/folders/1k1j2mNU1H5ST74AJp3qGEly67kEdnPNN): 81 genuine, 24 train-only synthetics; prints to be added in `raw/osun_prints/`.
-- Plan, design system, deploy notes, and agent skills
+- Plan, design system, deploy notes, backend API contract, and agent skills
 
 Training **images are not in git** (they made clones large). They live in the Google Drive folder **AdireTrust-data** — [open the folder](https://drive.google.com/drive/folders/1k1j2mNU1H5ST74AJp3qGEly67kEdnPNN) (Anyone with the link, Viewer). Layout: `raw/osun_genuine`, `raw/osun_prints`, `raw/synthetic`. Colab downloads this folder with `gdown` by default; see `data/README.md` and `model/train_colab.ipynb`.
 

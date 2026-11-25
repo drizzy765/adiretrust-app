@@ -42,7 +42,7 @@ Train-only augmentation (lighting, blur, small rotation, color jitter, macro cro
 2. **Interactive frontend** — Vite + React: upload, animated scan, result card. Follow `design/DESIGN_SYSTEM.md`.
 3. **Seller map** — Leaflet + OpenStreetMap, browser geolocation, “Open in Google Maps” link. No Google API key. `GET /sellers` currently returns five PLACEHOLDER pins.
 4. **QR Adire Passport** — `GET /passport/{id}` plus a printable/scanable card for consented genuine pieces.
-5. **Local-language chat** — Groq Llama for text (`GROQ_MODEL=llama-3.3-70b-versatile`). Intron Voice API for speech in `yo` / `ha` / `ig` / `pcm` if credits are available; otherwise text only.
+5. **Local-language chat** — Groq for text (`GROQ_MODEL=openai/gpt-oss-120b`, configurable). Intron Voice API for speech in `yo` / `ha` / `ig` / `pcm` if credits are available; otherwise text only.
 6. **Deploy** — Render (backend, free tier) + Vercel (frontend). Nobus Cube is the optional Nigerian-cloud path (official ODS partner). The booth must also run **offline on a laptop**.
 7. **Skills** — `skills/` for teammates and coding agents.
 
