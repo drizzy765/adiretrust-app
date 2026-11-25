@@ -10,7 +10,8 @@ All pretraining should run on a Colab GPU, not on the API host.
 
 1. Open [model/train_colab.ipynb](https://colab.research.google.com/github/drizzy765/adiretrust-app/blob/main/model/train_colab.ipynb) in Colab.
 2. Set the runtime to GPU.
-3. Run the **default** cells: they clone this repo, optionally mount the missing print photos from Drive, extract frozen **DINOv2 ViT-S/14** features, train a **logistic regression** probe, evaluate val/test with **computed** metrics (P/R on both classes, false-genuine count, ROC-AUC if both classes exist, val threshold sweep), and write `EVAL.md`.
+3. Run the **default** cells: they clone this repo, download the public **AdireTrust-data** Drive folder with `gdown` (or mount Drive if you already have it at `/content/drive/MyDrive/AdireTrust-data`), extract frozen **DINOv2 ViT-S/14** features, train a **logistic regression** probe, evaluate val/test with **computed** metrics (P/R on both classes, false-genuine count, ROC-AUC if both classes exist, val threshold sweep), and write `EVAL.md`.
+   Folder: https://drive.google.com/drive/folders/1k1j2mNU1H5ST74AJp3qGEly67kEdnPNN — layout `raw/osun_genuine`, `raw/osun_prints`, `raw/synthetic`.
 4. Optional cells are **off by default** (`RUN_*` flags): k-NN vs logreg; SigLIP and frozen EfficientNet-B0 probes; DINOv2 ViT-B and patch tokens; CLIP/SigLIP zero-shot with the plan prompts; Stage-2 DTD/batik notes (no auto-download); train-only augmentation + last-block fine-tune; a DINOv2 patch-similarity heatmap; multi-shot aggregation when `view_tag` is real.
 5. Download `model/weights/dinov2_vits14_logreg.joblib` and `label_map.json` (or copy them to Drive), then commit those small files or hand them to David for `POST /check`.
 
@@ -52,8 +53,9 @@ Paul owns preprocessing and training. Timi helps with training and evaluation. D
 ## Data rules
 
 - Use `data/labels/labels.csv` and `data/labels/splits.csv`.
-- **Osun workshop:** 81 genuine images are in `data/raw/osun_genuine/` (and resized copies under `data/processed/osun_workshop/224` and `512`). The manifest also lists 100 print images under `data/raw/osun_prints/`, but those files were **not present** in the public `drizzy765/AdireTrust` git history (raw media was gitignored). Do not invent print photos. If Paul has the local print folder, add it here with consent review and an honest count.
-- **Synthetic** images in `data/raw/synthetic/` are procedural textures, not real textiles. They are assigned to `train` only. Keep them out of val/test and out of any reported score.
+- **Images are not in git.** Get them from [AdireTrust-data](https://drive.google.com/drive/folders/1k1j2mNU1H5ST74AJp3qGEly67kEdnPNN) (`raw/osun_genuine`, `raw/osun_prints`, `raw/synthetic`). Repo paths with the same layout are a fallback only.
+- **Osun workshop:** 81 genuine photos. The manifest also lists 100 print images; add those to `raw/osun_prints/` in Drive when you have them. Do not invent print photos.
+- **Synthetic** images are procedural textures, not real textiles. They are assigned to `train` only. Keep them out of val/test and out of any reported score.
 - **Wikimedia Commons** rows in the manifest were left unsplit and are **not copied** into this repo pending human review.
 - Current Osun IDs are provisional (one image = one piece). Do not report a split metric as a physical-piece held-out benchmark until related views are grouped.
 - Record n images, n pieces, the split rule, and the date next to every number used in a pitch. **Do not invent accuracy.**

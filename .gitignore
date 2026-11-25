@@ -47,3 +47,11 @@ model/weights/*.npz
 Thumbs.db
 .idea/
 .vscode/
+
+# Image files are not in git. They live in the shared Google Drive folder
+# "AdireTrust-data" with layout: raw/osun_genuine, raw/osun_prints, raw/synthetic.
+# Keep data/labels/*.csv and data/README.md tracked.
+data/raw/osun_genuine/
+data/raw/osun_prints/
+data/raw/synthetic/
+data/processed/

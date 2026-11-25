@@ -10,7 +10,7 @@ Work queue for coding agents on `drizzy765/adiretrust-app`. Read this before you
 
 ## Global rules
 
-1. **Pull `main` before you start, and pull again immediately before every push.** Timi may still be uploading `data/raw/osun_prints/` via the GitHub web UI.
+1. **Pull `main` before you start, and pull again immediately before every push.** Images are not in git; use the Drive folder **AdireTrust-data** (https://drive.google.com/drive/folders/1k1j2mNU1H5ST74AJp3qGEly67kEdnPNN).
 2. **Push to `main`. Do not open a pull request. Do not force-push.**
 3. **No secrets in git.** Never commit `.env`, API keys, Intron/Groq tokens, or screenshots that show them. Use `.env.example` / `backend/.env.example` only. Set real values in the host environment (Nobus, Vercel, local).
 4. **No invented metrics, prices, artisan names, or heatmaps.** If print photos or weights are missing, say so and keep stubs labeled `STUB` / `PLACEHOLDER`.
@@ -116,11 +116,11 @@ When Timi posts the public frontend origin, add it to backend `ALLOWED_ORIGINS` 
 
 Owner of `model/` and the labels/splits. Skill: `skills/model-training/SKILL.md`. Notebook: `model/train_colab.ipynb`.
 
-### 1. Pull and check the print photos
+### 1. Pull and get the images from Drive
 
-1. `git pull --ff-only origin main`.
-2. Check `data/raw/osun_prints/` (Timi is uploading the 100 Osun print photos there). Also check `data/raw/osun_genuine/` and `data/raw/synthetic/`.
-3. If prints are still missing, use the notebook’s Drive fallback (`PRINTS_DRIVE_DIR` or `DATA_DRIVE_ROOT` in section 3). Do not invent a print set.
+1. `git pull --ff-only origin main` (or `git clone --depth 1` for a new clone — full history still has old image blobs).
+2. Images are **not** in the repo. Use the public Drive folder **AdireTrust-data**: https://drive.google.com/drive/folders/1k1j2mNU1H5ST74AJp3qGEly67kEdnPNN (Anyone with the link, Viewer). Layout: `raw/osun_genuine`, `raw/osun_prints`, `raw/synthetic`.
+3. The Colab default cell runs `gdown --folder` into that layout. Alternatively mount Drive and set `DATA_DRIVE_ROOT` to `/content/drive/MyDrive/AdireTrust-data` (add a My Drive shortcut if needed). Do not invent a print set if `raw/osun_prints/` is still empty.
 
 ### 2. Run the default Colab path
 
@@ -139,7 +139,7 @@ Owner of `model/` and the labels/splits. Skill: `skills/model-training/SKILL.md`
 1. `git pull --ff-only origin main`, then add the two weight files and `model/EVAL.md`, commit, and **push to `main`** (no PR).
 2. Tell David the files are on `main` so he can wire `/check` and deploy Nobus.
 
-**Files to touch:** `model/train_colab.ipynb` only if a real bug blocks training; `model/EVAL.md` (generated); `model/weights/dinov2_vits14_logreg.joblib`; `model/weights/label_map.json`. Optional later: `data/raw/osun_prints/` if you are the one adding consented local files.
+**Files to touch:** `model/train_colab.ipynb` only if a real bug blocks training; `model/EVAL.md` (generated); `model/weights/dinov2_vits14_logreg.joblib`; `model/weights/label_map.json`. If you add consented print photos, upload them to Drive `AdireTrust-data/raw/osun_prints/`, not to git.
 
 ### Done criteria
 
@@ -150,7 +150,7 @@ Owner of `model/` and the labels/splits. Skill: `skills/model-training/SKILL.md`
 
 ### Handoff
 
-**Receives from Timi:** print photos in `data/raw/osun_prints/` or a Drive path.
+**Receives from Timi:** print photos in Drive `AdireTrust-data/raw/osun_prints/` (folder link in `data/README.md`).
 
 **Gives to David:** weights + `EVAL.md` on `main`.
 
@@ -162,13 +162,17 @@ Owner of `model/` and the labels/splits. Skill: `skills/model-training/SKILL.md`
 
 Owner of `frontend/` and the design system. Skills: `skills/frontend-ui/SKILL.md`, `skills/design-system/SKILL.md`. Help Paul with training/eval when needed.
 
-### 1. Pull and scaffold
+### 1. Drive images (prints still pending)
+
+1. The training images live in **AdireTrust-data**: https://drive.google.com/drive/folders/1k1j2mNU1H5ST74AJp3qGEly67kEdnPNN. Layout: `raw/osun_genuine`, `raw/osun_prints`, `raw/synthetic`. 81 genuine and 24 synthetic should already be there. Upload the 100 Osun print photos into `raw/osun_prints/` when you have them. In the Drive UI, set Share → General access → **Anyone with the link, Viewer** (the API connector cannot grant link access). Do **not** send individual email invites, and do **not** commit images to git.
+
+### 2. Pull and scaffold
 
 1. `git pull --ff-only origin main`.
 2. Scaffold **Vite + React** (TypeScript) **in `frontend/`** (`npm create vite@latest . -- --template react-ts` or equivalent). Keep `frontend/README.md` product-flow notes.
 3. Follow `design/DESIGN_SYSTEM.md` (Adire indigo, type, components, motion).
 
-### 2. Build the product screens (mock the API until the Nobus URL exists)
+### 3. Build the product screens (mock the API until the Nobus URL exists)
 
 Implement, against `http://localhost:8000` or fixtures if the API is down:
 
@@ -181,12 +185,12 @@ Implement, against `http://localhost:8000` or fixtures if the API is down:
 
 **Files to touch:** everything under `frontend/` (e.g. `package.json`, `src/`, `index.html`, `.env.example` with `VITE_API_URL=http://localhost:8000`); `design/DESIGN_SYSTEM.md` only if a token must be clarified.
 
-### 3. Do not public-deploy until David’s Nobus URL is up
+### 4. Do not public-deploy until David’s Nobus URL is up
 
 1. Watch README **Live URLs** (and the team channel) for David’s public backend URL.
 2. Until then, develop against localhost or mocks. You may help Paul with Colab / `EVAL.md` review in parallel.
 
-### 4. Point the app at Nobus and deploy the frontend
+### 5. Point the app at Nobus and deploy the frontend
 
 1. Set `VITE_API_URL` to David’s **Nobus** backend URL (no trailing-slash surprises).
 2. Deploy the frontend per `docs/deploy.md`: **Nobus Cube** (static or same Cube if that is simpler) **or Vercel** (`frontend/` as the Vite root).
@@ -204,7 +208,7 @@ Implement, against `http://localhost:8000` or fixtures if the API is down:
 
 ### Handoff
 
-**Gives to Paul:** `data/raw/osun_prints/` (or a Drive path) as soon as the print photos are in place; help on training/eval if asked.
+**Gives to Paul:** remaining print photos uploaded to Drive `AdireTrust-data/raw/osun_prints/` (https://drive.google.com/drive/folders/1k1j2mNU1H5ST74AJp3qGEly67kEdnPNN); help on training/eval if asked. Do not send individual Drive invites — the folder is Anyone with the link, Viewer. Do not put the images in git.
 
 **Receives from David:** public Nobus backend URL.
 
@@ -216,7 +220,7 @@ Implement, against `http://localhost:8000` or fixtures if the API is down:
 
 | Step | Owner | Status |
 | --- | --- | --- |
-| Prints in `data/raw/osun_prints/` | Timi | In progress / check `main` after pull |
+| Prints in Drive `AdireTrust-data/raw/osun_prints/` | Timi | Upload to https://drive.google.com/drive/folders/1k1j2mNU1H5ST74AJp3qGEly67kEdnPNN when available |
 | Colab train + `EVAL.md` + weights on `main` | Paul | Not done until files exist |
 | `/check` wired, tests pass | David | Not done until weights are loaded or honest stub remains |
 | Backend live on Nobus; URL in README Live URLs | David | **Blocks public frontend deploy** |

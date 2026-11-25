@@ -20,10 +20,18 @@ Teammate work is in [`TASKS.md`](TASKS.md) (steps, files, done-criteria, handoff
 ## What works today
 
 - FastAPI skeleton: `GET /health`, `POST /check` (stub), `GET /sellers` (five PLACEHOLDER pins), `GET /passport/{id}` (stub)
-- Dataset slice copied from [`drizzy765/AdireTrust`](https://github.com/drizzy765/AdireTrust): 81 Osun genuine photos, 24 train-only synthetics, labels and splits
+- Labels and splits in `data/labels/` (copied from [`drizzy765/AdireTrust`](https://github.com/drizzy765/AdireTrust)). Photos are in [AdireTrust-data on Google Drive](https://drive.google.com/drive/folders/1k1j2mNU1H5ST74AJp3qGEly67kEdnPNN): 81 genuine, 24 train-only synthetics; prints to be added in `raw/osun_prints/`.
 - Plan, design system, deploy notes, and agent skills
 
-The 100 Osun print photos listed in the manifest were **not** in the public source git history. Do not invent a print set or a score.
+Training **images are not in git** (they made clones large). They live in the Google Drive folder **AdireTrust-data** — [open the folder](https://drive.google.com/drive/folders/1k1j2mNU1H5ST74AJp3qGEly67kEdnPNN) (Anyone with the link, Viewer). Layout: `raw/osun_genuine`, `raw/osun_prints`, `raw/synthetic`. Colab downloads this folder with `gdown` by default; see `data/README.md` and `model/train_colab.ipynb`.
+
+The manifest still lists 100 Osun print photos; add those files to `raw/osun_prints/` in Drive when you have them. Do not invent a print set or a score.
+
+A full-history clone still contains old image blobs. Prefer a shallow clone:
+
+```bash
+git clone --depth 1 https://github.com/drizzy765/adiretrust-app.git
+```
 
 ## Repo layout
 
@@ -31,7 +39,7 @@ The 100 Osun print photos listed in the manifest were **not** in the public sour
 backend/     FastAPI app, Dockerfile, tests
 frontend/     Vite + React (scaffold next; see frontend/README.md)
 model/        DINOv2 ViT-S/14 linear probe skeleton
-data/         labeled images and manifests
+data/         labels/splits in git; images are in Drive (see data/README.md)
 docs/         PLAN.md, deploy.md, consent and methodology
 design/       DESIGN_SYSTEM.md
 skills/       teammate / coding-agent skills
