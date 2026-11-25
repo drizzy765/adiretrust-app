@@ -8,7 +8,7 @@ The FastAPI service is in `backend/main.py`. The root `Dockerfile` builds it for
 | --- | --- |
 | `GET /health` | Liveness check |
 | `GET /capabilities` | Reports which optional providers and model are configured |
-| `POST /check` | Accepts multipart field `image`; currently returns the explicitly labeled model stub |
+| `POST /check` | Accepts multipart field `image`; returns a model verdict and class probabilities when the probe is loaded, otherwise HTTP 503 |
 | `GET /sellers` | Returns verified records from `DATA_DIR/sellers.json`, or labeled placeholder fixtures when that file is absent |
 | `GET /passport/{id}` | Returns `DATA_DIR/passports/{id}.json`, or a labeled placeholder when absent |
 | `POST /chat` | Groq text chat; expects `{ "language": "en|yo|ha|ig|pcm", "messages": [{"role":"user|assistant","content":"..."}] }` |
@@ -29,4 +29,4 @@ Passport records live at `passports/{id}.json` and use the `PassportResponse` fi
 
 ## Deployment settings
 
-Configure `ALLOWED_ORIGINS` with comma-separated exact browser origins, including the deployed frontend when it exists. `GROQ_MODEL`, `INTRON_BASE_URL`, `DATA_DIR`, and `CONFIDENCE_THRESHOLD` can also be set as environment variables. Do not commit secret values. The current photo check remains a stub until an evaluated checkpoint and inference implementation are supplied.
+Configure `ALLOWED_ORIGINS` with comma-separated exact browser origins, including the deployed frontend when it exists. `GROQ_MODEL`, `INTRON_BASE_URL`, `DATA_DIR`, `MODEL_DIR`, and `CONFIDENCE_THRESHOLD` can also be set as environment variables. Do not commit secret values. `/check` returns HTTP 503 if either probe artifact is missing from `MODEL_DIR` or the model fails to load.

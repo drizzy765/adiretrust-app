@@ -38,7 +38,7 @@ Train-only augmentation (lighting, blur, small rotation, color jitter, macro cro
 
 ## Build order
 
-1. **Photo check** — default: train a frozen DINOv2 ViT-S/14 logistic-regression probe in Colab (`model/train_colab.ipynb`) when the data allows, and wire `POST /check`. Optional gated cells cover k-NN, SigLIP, EfficientNet-B0, ViT-B / patch tokens, zero-shot prompts, and heatmaps. Until a real checkpoint is wired, the endpoint is an honest stub (`uncertain`, confidence 0.0, reasons marked STUB).
+1. **Photo check** — train a frozen DINOv2 ViT-S/14 logistic-regression probe in Colab (`model/train_colab.ipynb`), then load its artifacts in `POST /check`. The inference path is wired and the current probe artifacts are committed in `model/weights/`; `/check` returns HTTP 503 if they are missing or fail to load. Optional gated cells cover k-NN, SigLIP, EfficientNet-B0, ViT-B / patch tokens, zero-shot prompts, and heatmaps.
 2. **Interactive frontend** — Vite + React: upload, animated scan, result card. Follow `design/DESIGN_SYSTEM.md`.
 3. **Seller map** — Leaflet + OpenStreetMap, browser geolocation, “Open in Google Maps” link. No Google API key. `GET /sellers` currently returns five PLACEHOLDER pins.
 4. **QR Adire Passport** — `GET /passport/{id}` plus a printable/scanable card for consented genuine pieces.

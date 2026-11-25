@@ -35,18 +35,61 @@ def test_health(client: TestClient) -> None:
     assert response.json() == {"status": "ok"}
 
 
-def test_check_stub_returns_uncertain(client: TestClient) -> None:
+def test_check_returns_503_without_model(client: TestClient) -> None:
     files = {"image": ("swatch.jpg", _tiny_jpeg(), "image/jpeg")}
     response = client.post("/check", files=files)
+    assert response.status_code == 503
+    assert response.json()["detail"]["code"] == "MODEL_NOT_LOADED"
+
+
+def test_check_uses_mocked_model(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    class FakeModel:
+        def predict(self, _image: bytes) -> dict[str, object]:
+            return {
+                "predicted_label": "genuine_hand_dyed",
+                "confidence": 0.82,
+                "class_probabilities": {
+                    "factory_print": 0.18,
+                    "genuine_hand_dyed": 0.82,
+                },
+                "model_version": "dinov2_vits14_logreg",
+            }
+
+    monkeypatch.setattr("main.MODEL_RUNTIME", FakeModel())
+    files = {"image": ("swatch.jpg", _tiny_jpeg(), "image/jpeg")}
+    response = client.post("/check", files=files)
+
     assert response.status_code == 200
     body = response.json()
-    assert set(body) >= {"label", "confidence", "reasons", "price_guidance"}
-    assert body["label"] == "uncertain"
-    assert body["confidence"] == 0.0
-    assert body["model_version"] == "stub"
-    assert any("STUB" in reason for reason in body["reasons"])
+    assert body["label"] == "genuine_hand_dyed"
+    assert body["verdict"] == "genuine_hand_dyed"
+    assert body["confidence"] == 0.82
+    assert body["class_probabilities"]["factory_print"] == 0.18
+    assert body["model_version"] == "dinov2_vits14_logreg"
+    assert "not proof" in body["explanation"]
     assert body["price_guidance"]["status"] == "PLACEHOLDER"
-    assert body["price_guidance"]["buy_range_ngn"] is None
+
+
+def test_check_abstains_below_threshold(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    class FakeModel:
+        def predict(self, _image: bytes) -> dict[str, object]:
+            return {
+                "predicted_label": "genuine_hand_dyed",
+                "confidence": 0.55,
+                "class_probabilities": {
+                    "factory_print": 0.45,
+                    "genuine_hand_dyed": 0.55,
+                },
+                "model_version": "dinov2_vits14_logreg",
+            }
+
+    monkeypatch.setattr("main.MODEL_RUNTIME", FakeModel())
+    files = {"image": ("swatch.jpg", _tiny_jpeg(), "image/jpeg")}
+    response = client.post("/check", files=files)
+
+    assert response.status_code == 200
+    assert response.json()["label"] == "uncertain"
+    assert response.json()["verdict"] == "uncertain"
 
 
 def test_check_rejects_non_image(client: TestClient) -> None:

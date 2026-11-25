@@ -4,7 +4,7 @@
 
 Phone-camera app that helps a buyer check whether a cloth looks like **hand-dyed Abeokuta adire** or a **factory print**. It returns a verdict, a confidence score, a written explanation, and (later) buy/sell price guidance and a QR Adire Passport.
 
-This is a research and demo tool, not a certification standard. A photo alone cannot prove how a cloth was made.
+This is a research and demo tool, not a certification standard. A photo alone cannot prove how a cloth was made. Model results are limited to the small, single-workshop evaluation described below and in [`model/EVAL.md`](model/EVAL.md).
 
 Built for the [Ogun Digital Summit Hackathon](https://www.ogundigitalsummit.com/hackathon) (showcase 25 November 2026, Ogun Tech Hub, Kobape, Abeokuta; AI/ML track).
 
@@ -13,7 +13,7 @@ Teammate work is in [`TASKS.md`](TASKS.md) (steps, files, done-criteria, handoff
 ## Team
 
 - **Timi** (Agoro Oluwatimilehin Teslim) — frontend, and help with training. Building the frontend now and deploying it on Nobus.
-- **David Ajibua** — FastAPI backend. Wiring the model into `/check` and deploying the backend on Nobus now.
+- **David Ajibua** — FastAPI backend. Wired the model into `/check`; preparing the backend for Nobus deployment.
 - **Paul Adewole** — preprocessing and model training.
 
 ## Model results
@@ -30,13 +30,13 @@ Pitch line: “On 27 held-out real photos, 100% correct and never called a facto
 
 ## Weights
 
-The trained files are not on GitHub yet. Paul: download `dinov2_vits14_logreg.joblib` and `label_map.json` from the Colab file panel (`adiretrust-app/model/weights`) and commit them to [`model/weights/`](model/weights/) on `main`. They are small, so committing is fine. The root Docker image should copy `model/weights` to `/app/model/weights` and set `MODEL_DIR=/app/model/weights`.
+The trained probe and `label_map.json` are in [`model/weights/`](model/weights/). The root Docker image copies them to `/app/model/weights` and sets `MODEL_DIR=/app/model/weights`.
 
-Until those files are on `main` and David wires `/check`, the API still returns a stub verdict.
+`POST /check` runs the probe when the artifacts load successfully; it returns HTTP 503 if they are missing or the model cannot load.
 
 ## What works today
 
-- FastAPI backend: `GET /health`, `/capabilities`, `/check` (validated upload; honest stub until the probe is wired), `/sellers`, `/passport/{id}`, `/chat`, and Intron voice routes. Provider keys remain server-side.
+- FastAPI backend: `GET /health`, `/capabilities`, `/check`, `/sellers`, `/passport/{id}`, `/chat`, and Intron voice routes. `/check` uses the committed probe and returns 503 if model artifacts are missing or cannot load. Provider keys remain server-side.
 - Sellers and passports can load reviewed JSON records from `DATA_DIR`; absent records still produce clearly labeled placeholders.
 - Labels and splits in `data/labels/`. Photos are in [AdireTrust-data on Google Drive](https://drive.google.com/drive/folders/1k1j2mNU1H5ST74AJp3qGEly67kEdnPNN): 81 genuine, 100 prints in `raw/osun_prints/`, and 24 train-only synthetics. The Colab notebook downloads each file by Drive id (see `data/README.md` and `model/train_colab.ipynb`).
 - Plan, design system, deploy notes, and agent skills.
@@ -86,7 +86,7 @@ Timi can start the frontend now. Talk to the API at `VITE_API_URL` (default `htt
 | --- | --- | --- | --- |
 | `GET` | `/health` | none | `{ "status": "ok" }` |
 | `GET` | `/capabilities` | none | `{ "photo_check": { "available", "model_version" }, "text_chat": { "available" }, "voice_input": { "available" }, "voice_output": { "available" } }` |
-| `POST` | `/check` | multipart field `image` (file, max 10 MB) | Today a stub: `{ "label": "uncertain", "confidence": 0.0, "reasons": [...], "price_guidance": { "status", "note", "buy_range_ngn", "sell_range_ngn" }, "model_version": "stub", "filename" }`. `label` is `genuine_hand_dyed`, `factory_print`, or `uncertain`. Once the model is wired, `/check` will return a **verdict**, **confidence**, **per-class probabilities**, and an **explanation**. |
+| `POST` | `/check` | multipart field `image` (file, max 10 MB) | `{ "label", "verdict", "confidence", "class_probabilities", "explanation", "reasons", "price_guidance", "model_version", "filename" }`. Label/verdict is `genuine_hand_dyed`, `factory_print`, or `uncertain`. Returns 503 if model artifacts are missing or unavailable. |
 | `GET` | `/sellers` | none | `{ "sellers": [ { "id", "name", "market", "city", "lat", "lng", "maps_url", "placeholder", "note" } ], "note" }` |
 | `GET` | `/passport/{item_id}` | path `item_id` (`[A-Za-z0-9_-]{1,100}`) | `{ "id", "status", "note", "artisan_name", "workshop", "market", "date", "photo_urls", "maps_url" }` |
 | `POST` | `/chat` | JSON `{ "messages": [{ "role": "user" \| "assistant", "content" }], "language": "en" \| "yo" \| "ha" \| "ig" \| "pcm" }`. 1–12 messages, last must be `user`. | `{ "reply", "language", "model" }`. `503` with `TEXT_CHAT_UNAVAILABLE` if Groq is not configured. |

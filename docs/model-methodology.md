@@ -6,7 +6,7 @@
 
 Test whether photos of confirmed hand-dyed Adire can be distinguished from confirmed factory-printed lookalikes under a defined capture protocol. The output is a research/demo estimate, not proof of manufacturing process or a universal authenticity certification. A cloth that is out of distribution or poorly photographed should be allowed to receive an `uncertain`/abstain result.
 
-The current local manifest contains 81 accepted genuine-folder images and 100 accepted print-folder images, plus 16 Commons records and 24 synthetic images. Two genuine-folder near-duplicates were dropped. The workshop records use provisional one-image-per-piece IDs because multi-view physical-piece relationships have not been reviewed. A stratified split of these IDs is useful for probing code and features, but is not yet a trustworthy physical-piece benchmark. The repository has no trained model or measured evaluation.
+The current local manifest contains 81 accepted genuine-folder images and 100 accepted print-folder images, plus 16 Commons records and 24 synthetic images. Two genuine-folder near-duplicates were dropped. The workshop records use provisional one-image-per-piece IDs because multi-view physical-piece relationships have not been reviewed. A stratified split of these IDs is useful for probing code and features, but is not yet a trustworthy physical-piece benchmark. The current trained probe and measured evaluation are recorded in [`../model/EVAL.md`](../model/EVAL.md); treat those results as preliminary, not as a general accuracy claim.
 
 ## Plausible visual hypotheses
 

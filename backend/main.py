@@ -1,14 +1,10 @@
-"""AdireTrust API skeleton.
-
-This service does not load a vision model. POST /check returns a clearly
-marked stub verdict until the DINOv2 probe is trained and wired in.
-Do not import torch (or any heavy ML library) at module import time.
-"""
+"""AdireTrust API; the photo model is loaded lazily when its artifacts exist."""
 
 from __future__ import annotations
 
 import os
 import json
+import logging
 import re
 from io import BytesIO
 from pathlib import Path
@@ -36,7 +32,8 @@ class Settings(BaseSettings):
     intron_base_url: str = "https://infer.voice.intron.io"
     allowed_origins: str = "http://localhost:5173,http://localhost:3000"
     data_dir: str = "../data"
-    confidence_threshold: float = 0.6
+    model_dir: str = "../model/weights"
+    confidence_threshold: float = Field(default=0.6, ge=0.0, le=1.0)
 
     @property
     def origins(self) -> list[str]:
@@ -45,14 +42,17 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+logger = logging.getLogger("adiretrust.api")
+MODEL_RUNTIME: Any | None = None
+MODEL_LOAD_ERROR: str | None = None
 
 app = FastAPI(
     title="AdireTrust API",
     description=(
         "Phone-camera check for hand-dyed Abeokuta adire versus factory prints. "
-        "Current /check responses are stubs, not model results."
+        "Photo checking requires the exported DINOv2 probe artifacts."
     ),
-    version="0.1.0-stub",
+    version="0.2.0",
 )
 
 app.add_middleware(
@@ -64,6 +64,35 @@ app.add_middleware(
 )
 
 
+@app.on_event("startup")
+def load_model_on_startup() -> None:
+    global MODEL_RUNTIME, MODEL_LOAD_ERROR
+    if MODEL_RUNTIME is not None:
+        return
+
+    model_dir = Path(os.environ.get("MODEL_DIR", settings.model_dir)).resolve()
+    required_artifacts = (
+        model_dir / "dinov2_vits14_logreg.joblib",
+        model_dir / "label_map.json",
+    )
+    missing = [path.name for path in required_artifacts if not path.is_file()]
+    if missing:
+        MODEL_LOAD_ERROR = f"Missing model artifacts: {', '.join(missing)}"
+        logger.warning("Photo model is unavailable: %s", MODEL_LOAD_ERROR)
+        return
+
+    try:
+        from model_runtime import ModelRuntime
+
+        MODEL_RUNTIME = ModelRuntime.load(model_dir)
+        MODEL_LOAD_ERROR = None
+        logger.info("Loaded photo model dinov2_vits14_logreg")
+    except Exception as exc:  # noqa: BLE001
+        MODEL_RUNTIME = None
+        MODEL_LOAD_ERROR = str(exc)
+        logger.exception("Photo model failed to load; POST /check will return 503.")
+
+
 class PriceGuidance(BaseModel):
     status: str
     note: str
@@ -73,10 +102,13 @@ class PriceGuidance(BaseModel):
 
 class CheckResponse(BaseModel):
     label: str = Field(description="genuine_hand_dyed, factory_print, or uncertain")
+    verdict: str
     confidence: float
+    class_probabilities: dict[str, float]
+    explanation: str
     reasons: list[str]
     price_guidance: PriceGuidance
-    model_version: str = "stub"
+    model_version: str
     filename: str | None = None
 
 
@@ -222,12 +254,7 @@ def health() -> dict[str, str]:
 
 @app.post("/check", response_model=CheckResponse)
 async def check(image: UploadFile = File(...)) -> CheckResponse:
-    """Accept a cloth photo and return a stub verdict.
-
-    A future revision will run the DINOv2 linear probe and may abstain when
-    confidence is below CONFIDENCE_THRESHOLD. This stub always returns
-    `uncertain` with confidence 0.0 so nobody confuses it with a model score.
-    """
+    """Validate a cloth photo and classify it with the loaded probe."""
     if image.content_type and not image.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Upload an image file.")
 
@@ -243,15 +270,50 @@ async def check(image: UploadFile = File(...)) -> CheckResponse:
     except (UnidentifiedImageError, OSError, ValueError):
         raise HTTPException(status_code=400, detail="The uploaded file is not a valid image.") from None
 
+    model = MODEL_RUNTIME
+    if model is None:
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "code": "MODEL_NOT_LOADED",
+                "message": "The AdireTrust photo model is unavailable. Export and install the probe artifacts, then restart the API.",
+            },
+        )
+
+    try:
+        prediction = model.predict(payload)
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("Photo inference failed.")
+        raise HTTPException(
+            status_code=503,
+            detail={"code": "MODEL_INFERENCE_UNAVAILABLE", "message": "The photo model could not process this image."},
+        ) from exc
+
+    predicted_label = prediction["predicted_label"]
+    confidence = float(prediction["confidence"])
+    verdict = predicted_label if confidence >= settings.confidence_threshold else "uncertain"
+    class_probabilities = prediction["class_probabilities"]
+    if verdict == "uncertain":
+        explanation = (
+            "The model is not confident enough to distinguish hand-dyed Adire from a factory print. "
+            "Try a clear photo of the front, reverse, and a close edge."
+        )
+    else:
+        display_label = "hand-dyed Adire" if verdict == "genuine_hand_dyed" else "factory print"
+        explanation = (
+            f"The model predicts {display_label}. A photo-based prediction is a research/demo aid, "
+            "not proof of how the cloth was made."
+        )
+
     return CheckResponse(
-        label="uncertain",
-        confidence=0.0,
-        reasons=[
-            "STUB: no trained model is loaded. This is a placeholder response, not an authenticity result.",
-            "Capture protocol (for the real model): photograph the front, the reverse, and a close edge or resist line.",
-        ],
+        label=verdict,
+        verdict=verdict,
+        confidence=confidence,
+        class_probabilities=class_probabilities,
+        explanation=explanation,
+        reasons=[f"{label}: {probability:.1%}" for label, probability in class_probabilities.items()],
         price_guidance=STUB_PRICE,
-        model_version="stub",
+        model_version=prediction["model_version"],
         filename=image.filename,
     )
 
@@ -311,7 +373,11 @@ def data_path() -> Path:
 @app.get("/capabilities")
 def capabilities() -> dict[str, Any]:
     return {
-        "photo_check": {"available": False, "model_version": "stub"},
+        "photo_check": {
+            "available": MODEL_RUNTIME is not None,
+            "model_version": "dinov2_vits14_logreg" if MODEL_RUNTIME is not None else None,
+            "status": "ready" if MODEL_RUNTIME is not None else "model_not_loaded",
+        },
         "text_chat": {"available": bool(settings.groq_api_key)},
         "voice_input": {"available": bool(settings.intron_api_key)},
         "voice_output": {"available": bool(settings.intron_api_key)},

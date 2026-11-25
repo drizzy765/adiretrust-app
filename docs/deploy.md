@@ -6,13 +6,13 @@ Order: weights on `main` → David deploys the backend on Nobus and posts the UR
 
 No secrets in git. Set keys only in the host’s environment.
 
-David is wiring `/check` and deploying the backend on Nobus now. Timi can build the frontend now against the API contract (mocks until the URL exists) and will deploy it on Nobus too.
+`/check` is wired to the committed probe. The next step is deploying the backend on Nobus; Timi can build the frontend against the API contract (mocks until the URL exists) and deploy it on Nobus too.
 
 ## 1. Backend on Nobus Cube (primary)
 
 1. Sign in at [dashboard.nobus.io](https://dashboard.nobus.io) and open **Managed Services → Cubes → New Cube**.
 2. Choose **Custom Repository**, repo `https://github.com/drizzy765/adiretrust-app`, branch `main`, enable **Dockerfile Present**, and set **Container Port** to `8000`. The root `Dockerfile` builds from the repository root. It should `COPY model/weights` to `/app/model/weights` and set `MODEL_DIR=/app/model/weights`. Leave **Docker Compose Present** off.
-3. Select a small Linux flavor and review the Cost Summary. Once the probe is wired, the image needs CPU PyTorch plus the joblib weights; size the Cube accordingly.
+3. Select a Linux flavor that can build and run CPU PyTorch, and review the Cost Summary. The image includes the probe artifacts and caches the DINOv2 backbone; allow enough memory for build and inference.
 4. Set env vars from `backend/.env.example`: `ALLOWED_ORIGINS` (localhost, then the frontend origin), `MODEL_DIR=/app/model/weights`, `CONFIDENCE_THRESHOLD=0.6`, `DATA_DIR`, plus `GROQ_API_KEY` and `INTRON_API_KEY` only in the Cube environment. Never commit their values.
 5. To load reviewed seller/passport records later, mount a directory at `/data` and set `DATA_DIR=/data`. Without records, those routes remain placeholders.
 6. When the Cube is active, open port `8000` in its firewall, or map a domain and enable Cube SSL for target port `8000`.
@@ -21,7 +21,6 @@ David is wiring `/check` and deploying the backend on Nobus now. Timi can build 
 9. Shut down the Cube after the demo. Check for any separate volume or IP charges.
 
 ## 2. Frontend on Nobus (primary)
-
 Timi can scaffold and develop now, using localhost or mocks until the backend URL exists.
 
 1. Scaffold the Vite + React app in `frontend/` and build to `frontend/dist`.
@@ -55,7 +54,7 @@ npm install
 npm run dev -- --host
 ```
 
-Or, from the repo root (once the root Dockerfile copies weights): `docker build -t adiretrust-api . && docker run --rm -p 8000:8000 -e MODEL_DIR=/app/model/weights --env-file backend/.env adiretrust-api`.
+Or, from the repository root: `docker build -t adiretrust-api . && docker run --rm -p 8000:8000 -e MODEL_DIR=/app/model/weights --env-file backend/.env adiretrust-api`.
 
 Have a backup recording of one genuine-looking scan and one print scan if the live photo fails. Say the capture protocol out loud: front, back, close edge.
 

@@ -2,7 +2,7 @@
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/drizzy765/adiretrust-app/blob/main/model/train_colab.ipynb)
 
-This folder is for training and exporting the cloth-check classifier. The live API in `backend/` does not import torch and currently returns a stub.
+This folder is for training and exporting the cloth-check classifier. The API lazily imports torch only when the exported probe artifacts are present. Until then, `POST /check` returns HTTP 503 with a clear missing-model message.
 
 ## Train on Google Colab (primary)
 
@@ -48,7 +48,7 @@ A false "genuine" on a factory print is the costly error. Prefer abstaining over
 3. Fit a regularized **linear probe** (logistic regression) on those embeddings.
 4. Do **not** train a CNN from scratch, and do not fine-tune the whole backbone until there are enough confirmed physical pieces.
 
-Paul owns preprocessing and training. Timi helps with training and evaluation. David wires a successful checkpoint into `POST /check` later.
+Paul owns preprocessing and training. Timi helps with training and evaluation. The current exported checkpoint is wired into `POST /check`; future checkpoints should include the matching `label_map.json` and evaluation report.
 
 ## Data rules
 
